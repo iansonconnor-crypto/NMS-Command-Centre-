@@ -1,13 +1,8 @@
-# NMS Command Centre V6.3 — Mission Sorting
+# NMSCC v6-4 — Navigation Bug Fix
 
-Adds mission sorting controls.
+Fixes the JavaScript error that could stop the COMMAND and MISSIONS navigation from responding.
 
-Sort Mission Control by:
-- Priority
-- Date Created — Newest First
-- Date Created — Oldest First
-- Progress
+Also isolates the enhanced Mission Control editor from the legacy mission editor.
 
-New missions store their creation timestamp automatically. Existing missions are migrated automatically and retain all existing `nmscc3` data.
-
-Auto-update cache: `nms-command-v6-4`.
+Existing `nmscc3` data is retained.
+Auto-update cache: `nms-command-v6-5`.

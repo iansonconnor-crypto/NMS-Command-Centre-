@@ -27,7 +27,7 @@ nav button{border:0;background:none;padding:8px 2px;font-size:9px;color:var(--mu
 </style>
 </head>
 <body>
-<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.3 • Mission Sorting</small></header>
+<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.4 • Navigation Bug Fix</small></header>
 <main id="app"></main>
 <nav id="nav"></nav>
 <script>
@@ -153,7 +153,7 @@ function addObjective(mi){
  if(!["Critical","High","Medium","Low","Optional"].includes(pr))pr="Medium";
  state.missions[mi].objectives.push({name,done:false,priority:pr,notes:""});save();render();
 }
-function editMission(mi){
+function editMissionV64(mi){
  let m=state.missions[mi];
  let n=prompt("Mission name",m.name);if(n===null)return;m.name=n||m.name;
  let d=prompt("Description",m.description||"");if(d!==null)m.description=d;
@@ -192,7 +192,7 @@ function missionsV62(){
  return `<div class="card"><div class="row"><div><span class="pill">${esc(m.priority)}</span> <span class="pill">${esc(mstatus(m))}</span><h2>${esc(m.name)}</h2></div><b>${pc}%</b></div>
  ${m.description?`<p>${esc(m.description)}</p>`:""}<div style="height:8px;background:#13212c;border-radius:8px;overflow:hidden"><div style="height:100%;width:${pc}%;background:currentColor"></div></div>
  <small class="muted">${done}/${total} objectives complete • Created ${new Date(m.createdAt||Date.now()).toLocaleDateString()}</small>
- <div class="row"><button onclick="addObjective(${i})">+ OBJECTIVE</button><button onclick="editMission(${i})">EDIT MISSION</button><button onclick="deleteMissionV62(${i})">DELETE</button></div>
+ <div class="row"><button onclick="addObjective(${i})">+ OBJECTIVE</button><button onclick="editMissionV64(${i})">EDIT MISSION</button><button onclick="deleteMissionV62(${i})">DELETE</button></div>
  ${m.objectives.length?m.objectives.map((o,oi)=>`<div class="item"><div class="row"><label><input type="checkbox" ${o.done?"checked":""} onchange="toggleObjective(${i},${oi})"> <b>${esc(o.name)}</b></label><span class="pill">${esc(o.priority)}</span></div>${o.notes?`<small>${esc(o.notes)}</small>`:""}<div class="row"><button onclick="editObjective(${i},${oi})">EDIT</button><button onclick="moveObjective(${i},${oi},-1)">↑</button><button onclick="moveObjective(${i},${oi},1)">↓</button><button onclick="deleteObjective(${i},${oi})">DELETE</button></div></div>`).join(""):`<div class="item muted">No objectives yet. Tap + OBJECTIVE to build this mission.</div>`}
  ${m.notes?`<div class="item"><b>MISSION NOTES</b><br><small>${esc(m.notes)}</small></div>`:""}</div>`}).join("")||'<div class="card muted">No missions match this filter.</div>'}
  </section>`;
