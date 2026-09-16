@@ -27,7 +27,7 @@ nav button{border:0;background:none;padding:8px 2px;font-size:9px;color:var(--mu
 </style>
 </head>
 <body>
-<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.1 • Universal Knowledge</small></header>
+<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.3 • Mission Sorting</small></header>
 <main id="app"></main>
 <nav id="nav"></nav>
 <script>
@@ -123,8 +123,83 @@ function data(){return `<section class="page active"><div class="card"><h2>ECONO
  <div class="card"><h2>COMMAND NOTES</h2><textarea onchange="setField('notes',this.value)">${esc(S.notes)}</textarea></div>
  <div class="card"><h2>BACKUP / RESTORE</h2><div class="actions"><button class="primary" onclick="exportData()">EXPORT JSON</button><button onclick="document.getElementById('imp').click()">IMPORT JSON</button><input id="imp" type="file" accept=".json,application/json" style="display:none" onchange="importData(this)"></div><small class="muted">Export backups before clearing Safari data or moving devices.</small></div></section>`}
 function field(k,l,v){return `<label class="muted">${l}</label><input type="number" value="${Number(v)||0}" onchange="setField('${k}',this.value)">`}
+
+function normMissions(){
+  if(!Array.isArray(state.missions)) state.missions=[];
+  state.missions.forEach(m=>{
+    if(!m.priority)m.priority="Medium"; if(!m.createdAt)m.createdAt=Date.now();
+    if(!m.description)m.description="";
+    if(!m.notes)m.notes="";
+    if(!Array.isArray(m.objectives))m.objectives=[];
+    m.objectives=m.objectives.map(o=>typeof o==="string"?{name:o,done:false,priority:"Medium",notes:""}:{
+      name:o.name||o.title||"Objective",done:!!o.done,priority:o.priority||"Medium",notes:o.notes||""
+    });
+  });
+}
+function mpct(m){return m.objectives&&m.objectives.length?Math.round(100*m.objectives.filter(o=>o.done).length/m.objectives.length):(Number(m.progress)||0)}
+function mstatus(m){let p=mpct(m);return p>=100?"Complete":(m.status||"Planned")}
+function priorityRank(p){return {Critical:0,High:1,Medium:2,Low:3,Optional:4}[p]??2}
+function addMissionV62(){
+ let name=prompt("Mission name"); if(!name)return;
+ let desc=prompt("Mission description / goal","")||"";
+ let pr=prompt("Priority: Critical, High, Medium, Low or Optional","Medium")||"Medium";
+ if(!["Critical","High","Medium","Low","Optional"].includes(pr))pr="Medium";
+ state.missions.push({name,description:desc,priority:pr,status:"Planned",progress:0,notes:"",objectives:[],createdAt:Date.now()});
+ save(); render();
+}
+function addObjective(mi){
+ let name=prompt("Objective");if(!name)return;
+ let pr=prompt("Objective priority: Critical, High, Medium, Low or Optional","Medium")||"Medium";
+ if(!["Critical","High","Medium","Low","Optional"].includes(pr))pr="Medium";
+ state.missions[mi].objectives.push({name,done:false,priority:pr,notes:""});save();render();
+}
+function editMission(mi){
+ let m=state.missions[mi];
+ let n=prompt("Mission name",m.name);if(n===null)return;m.name=n||m.name;
+ let d=prompt("Description",m.description||"");if(d!==null)m.description=d;
+ let pr=prompt("Priority: Critical, High, Medium, Low or Optional",m.priority||"Medium");
+ if(["Critical","High","Medium","Low","Optional"].includes(pr))m.priority=pr;
+ let notes=prompt("Mission notes",m.notes||"");if(notes!==null)m.notes=notes;
+ save();render();
+}
+function editObjective(mi,oi){
+ let o=state.missions[mi].objectives[oi];
+ let n=prompt("Objective",o.name);if(n!==null&&n)o.name=n;
+ let pr=prompt("Priority: Critical, High, Medium, Low or Optional",o.priority||"Medium");
+ if(["Critical","High","Medium","Low","Optional"].includes(pr))o.priority=pr;
+ let notes=prompt("Objective notes",o.notes||"");if(notes!==null)o.notes=notes;
+ save();render();
+}
+function moveObjective(mi,oi,dir){
+ let a=state.missions[mi].objectives,j=oi+dir;if(j<0||j>=a.length)return;
+ [a[oi],a[j]]=[a[j],a[oi]];save();render();
+}
+function toggleObjective(mi,oi){state.missions[mi].objectives[oi].done=!state.missions[mi].objectives[oi].done;save();render()}
+function deleteObjective(mi,oi){if(confirm("Delete this objective?")){state.missions[mi].objectives.splice(oi,1);save();render()}}
+function deleteMissionV62(mi){if(confirm("Delete this mission and its objectives?")){state.missions.splice(mi,1);save();render()}}
+function missionsV62(){
+ normMissions();
+ let filter=window.mfilter||"All", sort=window.msort||"Priority";
+ let rows=state.missions.map((m,i)=>({m,i})).filter(x=>filter==="All"||x.m.priority===filter);
+ if(sort==="Priority")rows.sort((a,b)=>priorityRank(a.m.priority)-priorityRank(b.m.priority));
+ if(sort==="Progress")rows.sort((a,b)=>mpct(b.m)-mpct(a.m));
+ if(sort==="Newest")rows.sort((a,b)=>(b.m.createdAt||0)-(a.m.createdAt||0));
+ if(sort==="Oldest")rows.sort((a,b)=>(a.m.createdAt||0)-(b.m.createdAt||0));
+ return `<section class="page active">
+ <div class="card"><div class="row"><div><h2>MISSION CONTROL</h2><small class="muted">Objectives drive mission progress automatically.</small></div><button onclick="addMissionV62()">+ CREATE MISSION</button></div>
+ <div class="row"><select onchange="window.mfilter=this.value;render()">${["All","Critical","High","Medium","Low","Optional"].map(x=>`<option ${x===filter?"selected":""}>${x}</option>`).join("")}</select><select onchange="window.msort=this.value;render()">${["Priority","Newest","Oldest","Progress"].map(x=>`<option ${x===sort?"selected":""}>${x}</option>`).join("")}</select></div></div>
+ ${rows.map(({m,i})=>{let pc=mpct(m),done=m.objectives.filter(o=>o.done).length,total=m.objectives.length;
+ return `<div class="card"><div class="row"><div><span class="pill">${esc(m.priority)}</span> <span class="pill">${esc(mstatus(m))}</span><h2>${esc(m.name)}</h2></div><b>${pc}%</b></div>
+ ${m.description?`<p>${esc(m.description)}</p>`:""}<div style="height:8px;background:#13212c;border-radius:8px;overflow:hidden"><div style="height:100%;width:${pc}%;background:currentColor"></div></div>
+ <small class="muted">${done}/${total} objectives complete • Created ${new Date(m.createdAt||Date.now()).toLocaleDateString()}</small>
+ <div class="row"><button onclick="addObjective(${i})">+ OBJECTIVE</button><button onclick="editMission(${i})">EDIT MISSION</button><button onclick="deleteMissionV62(${i})">DELETE</button></div>
+ ${m.objectives.length?m.objectives.map((o,oi)=>`<div class="item"><div class="row"><label><input type="checkbox" ${o.done?"checked":""} onchange="toggleObjective(${i},${oi})"> <b>${esc(o.name)}</b></label><span class="pill">${esc(o.priority)}</span></div>${o.notes?`<small>${esc(o.notes)}</small>`:""}<div class="row"><button onclick="editObjective(${i},${oi})">EDIT</button><button onclick="moveObjective(${i},${oi},-1)">↑</button><button onclick="moveObjective(${i},${oi},1)">↓</button><button onclick="deleteObjective(${i},${oi})">DELETE</button></div></div>`).join(""):`<div class="item muted">No objectives yet. Tap + OBJECTIVE to build this mission.</div>`}
+ ${m.notes?`<div class="item"><b>MISSION NOTES</b><br><small>${esc(m.notes)}</small></div>`:""}</div>`}).join("")||'<div class="card muted">No missions match this filter.</div>'}
+ </section>`;
+}
+
 function render(){
- document.getElementById("app").innerHTML=({command:command,missions:missions,assets:assets,fleet:fleet,empire:empire,knowledge:knowledge,data:data}[tab])();
+ document.getElementById("app").innerHTML=({command:command,missions:missionsV62,assets:assets,fleet:fleet,empire:empire,knowledge:knowledge,data:data}[tab])();
  document.getElementById("nav").innerHTML=tabs.map(t=>`<button class="${tab===t[0]?"active":""}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join("")
 }
 function addRec(k){let name=prompt("Name");if(!name)return;let role=prompt("Role / status","");let details=prompt("Details","");S[k].push({name,role,status:role,details});save()}
