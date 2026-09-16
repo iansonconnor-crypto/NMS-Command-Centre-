@@ -3,144 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#06131b">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="NMS Command">
+<meta name="theme-color" content="#07131d">
 <link rel="manifest" href="./manifest.webmanifest">
-<title>NMS Command Centre</title>
+<title>NMS Command Centre V5</title>
 <style>
-:root{--bg:#03090e;--p:#091923;--line:#1d4d61;--c:#64e7ff;--g:#64e8a8;--y:#ffd166;--t:#e9f7fb;--m:#8aa6b3}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -10%,#17384a,#06131b 38%,#03080c 78%);color:var(--t);font:14px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
-header{padding:calc(14px + env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid var(--line);background:#061119ed;position:sticky;top:0;z-index:10;backdrop-filter:blur(14px)}
-h1{margin:0;color:var(--c);font-size:18px;letter-spacing:.12em}header small,.muted{color:var(--m)}
-main{max-width:900px;margin:auto;padding:14px 14px 100px}.page{display:none}.page.active{display:block}
-.card{background:linear-gradient(145deg,#0b1c27,#07141d);border:1px solid #174357;border-radius:15px;padding:14px;margin-bottom:12px;box-shadow:0 9px 28px #0005}
-h2{font-size:12px;letter-spacing:.14em;color:var(--y);text-transform:uppercase;margin:0 0 12px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
-.stat{background:#0b1c27;border:1px solid #153b4d;border-radius:12px;padding:11px}.stat label{display:block;color:var(--m);font-size:10px;text-transform:uppercase;letter-spacing:.1em}.stat b{display:block;color:var(--c);font-size:19px}
-input,textarea{width:100%;background:#06131b;color:var(--t);border:1px solid #285469;border-radius:9px;padding:9px;font:inherit}textarea{min-height:78px}
-button{background:#102b39;color:var(--c);border:1px solid #285c70;border-radius:9px;padding:8px 10px;font-weight:650}
-.bar{height:8px;background:#142a34;border-radius:20px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--c),var(--g))}
-.row{display:flex;align-items:center;gap:9px;padding:10px 0;border-top:1px solid #12313e}.row:first-child{border-top:0}.grow{flex:1}
-.check{display:block;padding:8px 0;border-bottom:1px solid #12313e}.check input{width:auto;margin-right:8px;accent-color:var(--g)}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:#061119f5;border-top:1px solid var(--line);padding:7px 5px calc(7px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr)}
-nav button{border:0;background:none;padding:5px 1px;color:var(--m);font-size:9px}nav button span{display:block;font-size:19px}nav button.on{color:var(--c)}
-.mission{border-left:3px solid var(--y)}.road{text-align:center;white-space:pre-line;color:#b9d6df}
-dialog{width:min(94vw,650px);background:#07151e;color:var(--t);border:1px solid var(--line);border-radius:16px;padding:16px}dialog::backdrop{background:#000b}
-.detail{background:#081822;border:1px solid #174357;border-radius:12px;padding:12px;margin-top:10px}
-.detail h3{margin:0 0 7px;color:var(--c);font-size:14px}.pct{color:var(--g);font-weight:700}
-.reward{border-left:3px solid var(--g);padding-left:10px}.req{border-left:3px solid var(--y);padding-left:10px}
-@media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
-</style></head>
+:root{--bg:#050a0f;--panel:#0c1720;--panel2:#101f2b;--line:#203745;--txt:#eaf7ff;--muted:#88a6b8;--cyan:#38d9ff;--green:#4cf0a5;--amber:#ffc857;--red:#ff6b7a}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07131d,#050a0f 35%);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:88px}
+header{position:sticky;top:0;z-index:5;padding:16px;background:#07131deF;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+h1{font-size:19px;margin:0;letter-spacing:.08em}header small{color:var(--cyan)}
+main{max-width:900px;margin:auto;padding:14px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:11px}
+.stat b{display:block;font-size:22px;color:var(--cyan)}.stat span,.muted{color:var(--muted);font-size:12px}
+h2{font-size:14px;letter-spacing:.09em;color:var(--cyan);margin:5px 0 12px}.row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:8px 0}
+button,input,textarea,select{font:inherit}button{background:#132a38;color:var(--txt);border:1px solid #285064;border-radius:10px;padding:9px 11px}button.primary{border-color:var(--cyan);color:var(--cyan)}button.danger{color:var(--red)}
+input,textarea,select{width:100%;background:#071119;border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:10px;margin:4px 0}textarea{min-height:80px;resize:vertical}
+.item{padding:10px;border:1px solid var(--line);border-radius:11px;margin:7px 0}.item b{font-size:14px}.item small{display:block;color:var(--muted);margin-top:3px}
+.progress{height:7px;background:#071119;border-radius:9px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:var(--green)}
+.alert{border-left:3px solid var(--amber);padding-left:10px;margin:9px 0;font-size:13px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:#07131df5;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+nav button{border:0;background:none;padding:8px 2px;font-size:9px;color:var(--muted)}nav button.active{color:var(--cyan)}
+.page{display:none}.page.active{display:block}.pill{font-size:11px;padding:3px 7px;border:1px solid var(--line);border-radius:20px;color:var(--green)}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{font-size:12px;padding:6px 8px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
 <body>
-<header><h1>🌌 NMS COMMAND CENTRE</h1><small>v4 • Interactive mission control</small></header>
-<main>
-<section id="command" class="page active">
-<div class="grid">
-<div class="stat"><label>Units</label><b id="uOut">120M</b></div><div class="stat"><label>Nanites</label><b id="nOut">—</b></div>
-<div class="stat"><label>Glyphs</label><b>16/16 ✓</b></div><div class="stat"><label>Galaxies</label><b>2</b></div>
-</div><br>
-<div class="card mission"><h2>🎯 Active Mission</h2><b id="activeOut">They Who Returned</b><p class="muted">Autophage storyline → Void Motes → staff components → Autophage Staff.</p></div>
-<div class="card"><h2>Core Objectives</h2><div id="summary"></div></div>
-<div class="card"><h2>Next Targets</h2><p>① Complete <b>They Who Returned</b><br>② Progress toward <b>Autophage Staff</b><br>③ Establish a <b>Lush Galaxy Gateway Base</b></p></div>
-<div class="card"><h2>Ultimate Route</h2><div class="road">🧬 AUTOPHAGE → 🪄 STAFF
-↓
-🏗️ ALL BLUEPRINTS → 👷 WORKSTATIONS
-↓
-🏘️ MAX SETTLEMENT
-↓
-🚀 CORVETTE → 🚢 FREIGHTER/FLEET
-↓
-💰 250M → 500M → ~1B+
-↓
-🛰️ STAR STATION → 👑 DIRECTOR</div></div>
-</section>
-
-<section id="missions" class="page">
-<div class="card"><h2>🎯 Mission Log</h2><label class="muted">Active mission</label><input id="activeMission"><br><br><label class="muted">Notes</label><textarea id="missionNotes"></textarea></div>
-<div class="card"><h2>Completion Tracker</h2><div id="tracker"></div></div>
-</section>
-
-<section id="assets" class="page">
-<div class="card"><h2>🚀 Starship Register</h2><b>Embers Defender TB4</b><p class="muted">A-Class • Authenticated Starship</p><div class="grid">
-<div class="stat"><label>Damage</label><b>398.0</b></div><div class="stat"><label>Shield</label><b>210.9</b></div><div class="stat"><label>Hyperdrive</label><b>347 LY</b></div><div class="stat"><label>Manoeuvre</label><b>432.0</b></div></div></div>
-<div class="card"><h2>🚀 Corvette</h2><p>🟡 Developing</p><textarea id="corvetteNotes" placeholder="Modules, stats, build notes..."></textarea></div>
-<div class="card"><h2>🚢 Freighter / Frigates</h2><p>Freighter ✅ • Fleet 🟡</p><textarea id="fleetNotes"></textarea></div>
-<div class="card"><h2>🔫 Multi-Tools</h2><p>S-Class combat weapon found 🟡<br>S-Class Experimental scanner ⬜</p><textarea id="toolNotes"></textarea></div>
-</section>
-
-<section id="economy" class="page">
-<div class="card"><h2>💰 Wallet</h2><div class="grid"><div><label class="muted">Units</label><input id="units" type="number"></div><div><label class="muted">Nanites</label><input id="nanites" type="number"></div></div></div>
-<div class="card"><h2>🏭 Industrial Assets</h2><p>✅ Gold Mine — S-Class hotspot<br>✅ Activated Indium Mine<br>⬜ Runaway Mould / Nanite Farm</p></div>
-<div class="card"><h2>🧮 Nanite Calculator</h2><label class="muted">Runaway Mould</label><input id="mould" type="number" value="0"><p>Refines to approximately <b id="mouldOut">0</b> Nanites at 5:1.</p></div>
-<div class="card"><h2>🛰️ Star Station Fund</h2><div class="bar"><i id="fundBar"></i></div><p><b id="fundOut"></b> of 1B planning target</p></div>
-</section>
-
-<section id="base" class="page">
-<div class="card"><h2>🏗️ Construction Blueprints</h2><p>Goal: unlock every construction blueprint.</p><textarea id="buildNotes" placeholder="Salvaged Data, remaining trees..."></textarea></div>
-<div class="card"><h2>👷 Workstation Missions</h2><div id="workstations"></div></div>
-<div class="card"><h2>🏘️ Settlement</h2><div id="settlement"></div><textarea id="settlementNotes" placeholder="Class, population, happiness, productivity, debt..."></textarea></div>
-<div class="card"><h2>🌌 Galaxy Network</h2><p>✅ Euclid<br>✅ Lush galaxy unlocked<br>⬜ Permanent Lush Gateway Base</p></div>
-</section>
-</main>
-
-<nav>
-<button class="on" data-p="command"><span>⌂</span>COMMAND</button><button data-p="missions"><span>🎯</span>MISSIONS</button>
-<button data-p="assets"><span>🚀</span>ASSETS</button><button data-p="economy"><span>💰</span>ECONOMY</button><button data-p="base"><span>🏗️</span>BASE</button>
-</nav>
-<dialog id="dlg"><button style="float:right" onclick="dlg.close()">Close</button><h2 id="dt"></h2><div id="db"></div></dialog>
+<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V5 • Traveller Operations Terminal</small></header>
+<main id="app"></main>
+<nav id="nav"></nav>
 <script>
-const OBJ=[
-["Main Story",["Complete The Purge","Unlock 16 Portal Glyphs"],[1,1]],
-["Autophage",["Trigger They Who Returned","Complete They Who Returned","Unlock Autophage access","Earn Void Motes"],[1,0,0,0]],
-["Autophage Staff",["Unlock staff assembly","Staff head","Staff core","Staff pole","Assemble staff"],[]],
-["Construction",["Collect Salvaged Data","Clear research trees","Unlock every construction blueprint"],[]],
-["Workstations",["Overseer","Scientist","Armourer","Farmer","Technician"],[]],
-["Settlement",["Clear debt","Productivity","Happiness","Population","Upgrade buildings","Max development"],[]],
-["Corvette",["Develop Corvette","Advanced modules","Tractor Beam","S-Class"],[]],
-["Freighter/Fleet",["Own Freighter","Develop fleet","Matter Beam","End-game setup"],[1,0,0,0]],
-["Economy",["120M","250M","500M","~1B+"],[1,0,0,0]],
-["Star Station",["Find system","Inspect Station Core","Meet requirements","Fund acquisition","Claim station","Develop station"],[]]
-];
-let S={};try{S=JSON.parse(localStorage.getItem("nmscc3")||"{}")}catch(e){}
-const save=()=>localStorage.setItem("nmscc3",JSON.stringify(S));
-const checks=i=>S.checks?.[i]||OBJ[i][2]||[];
-function render(){
-let s="",t="";OBJ.forEach((o,i)=>{let c=checks(i),d=o[1].filter((_,j)=>c[j]).length,icon=d===o[1].length?"✅":d?"🟡":"⬜";s+=`<div class=row><span>${icon}</span><div class=grow><b>${o[0]}</b><div class=muted>${d}/${o[1].length}</div></div></div>`;t+=`<div class=row><span>${icon}</span><div class=grow><b>${o[0]}</b><div class=muted>${d}/${o[1].length}</div></div><button onclick="openGoal(${i})">OPEN</button></div>`});summary.innerHTML=s;tracker.innerHTML=t}
-const INFO={
-0:{objective:"Finish the core Artemis progression and retain full portal access.",requirements:"Completed.",reward:"16 glyphs, galaxy transition access and end-game story progression."},
-1:{objective:"Complete the Autophage questline.",requirements:"The Purge completed and They Who Returned triggered.",reward:"Autophage progression, Void Motes and access to staff-related rewards."},
-2:{objective:"Build your dedicated Autophage staff.",requirements:"Progress the Autophage questline and obtain the required staff components.",reward:"A complete staff Multi-Tool and a major Command Centre milestone."},
-3:{objective:"Unlock the full construction catalogue.",requirements:"Gather Salvaged Data and clear the relevant research trees/mission unlocks.",reward:"Maximum freedom for bases, farms and infrastructure."},
-4:{objective:"Finish every specialist workstation mission chain.",requirements:"Recruit and progress the Overseer, Scientist, Armourer, Farmer and Technician.",reward:"Blueprints, technology and completed base specialist progression."},
-5:{objective:"Develop your settlement as far as the current game allows.",requirements:"Manage debt, productivity, happiness, population and building opportunities.",reward:"A mature settlement and completed settlement objective."},
-6:{objective:"Finish and optimise your Corvette project.",requirements:"Acquire modules, install desired systems and continue class/stat development.",reward:"Dedicated end-game combat/exploration Corvette."},
-7:{objective:"Build an end-game freighter and frigate operation.",requirements:"Fleet expansion, freighter technology and expedition development.",reward:"Mobile fleet headquarters and stronger expedition capability."},
-8:{objective:"Build the capital reserve for your Star Station plan.",requirements:"Use mines, trade, salvage and other income streams.",reward:"Financial readiness for station acquisition and development."},
-9:{objective:"Acquire and develop your own Star Station.",requirements:"Find a suitable station, inspect its Station Core, satisfy local requirements and fund acquisition.",reward:"Station Director status and your primary end-game empire objective."}
+const KEY="nmscc3";
+const defaults={
+ units:120000000,nanites:0,quicksilver:0,voidMotes:0,glyphs:16,galaxies:2,
+ missions:[
+  {name:"They Who Returned",status:"ACTIVE",progress:35,notes:"Continue Autophage storyline; unlock full Autophage access and Void Motes."},
+  {name:"Autophage Staff",status:"PLANNED",progress:0,notes:"Earn Void Motes, acquire staff components and assemble Voltaic Staff."},
+  {name:"Construction Blueprints",status:"IN PROGRESS",progress:20,notes:"Unlock every construction blueprint."},
+  {name:"Base Specialist Missions",status:"IN PROGRESS",progress:10,notes:"Complete Overseer, Scientist, Armourer, Farmer and Technician chains."},
+  {name:"Max Settlement",status:"IN PROGRESS",progress:15,notes:"Develop settlement to maximum practical class/productivity/happiness."},
+  {name:"Star Station Project",status:"END GOAL",progress:5,notes:"Build standing, salvage capability and capital; inspect candidate Station Cores."}
+ ],
+ ships:[{name:"Embers Defender TB4",class:"A",role:"Main Starship",details:"Damage 398.0 • Shield 210.9 • Hyperdrive 347.0 • Manoeuvrability 432.0"}],
+ tools:[
+  {name:"S-Class Weapon Multi-Tool",class:"S",role:"Weapon reserve",details:"Acquired at system station; not intended as main Multi-Tool."},
+  {name:"Experimental Multi-Tool",class:"S",role:"Scanner",details:"PLANNED • Optimize scanner modules and supercharged slots."}
+ ],
+ frigates:[],
+ mines:[
+  {name:"Gold Mine",status:"OPERATIONAL",details:"S-Class hotspot • independent extraction networks."},
+  {name:"Activated Indium Mine",status:"OPERATIONAL",details:"B-Class hotspot • scalable independent networks."},
+  {name:"Runaway Mould Farm",status:"PLANNED",details:"Curious Deposits → Runaway Mould → Nanites."}
+ ],
+ bases:[],
+ freighter:"Freighter owned. Develop fleet, storage, Matter Beam and fleet technology.",
+ corvette:"Corvette under development. Medium combat/exploration flagship concept. Tractor Beam planned.",
+ settlement:"Settlement owned. Goal: maximize productivity, happiness, buildings and class.",
+ station:"End goal: own and develop a Star Station. Build standing, salvage capability and ~1B+ Unit acquisition reserve.",
+ notes:""
 };
-function openGoal(i){
- dt.textContent=OBJ[i][0]; db.innerHTML="";
- let c=checks(i), done=OBJ[i][1].filter((_,j)=>c[j]).length, pct=Math.round(done/OBJ[i][1].length*100), info=INFO[i];
- db.innerHTML=`<div class="detail"><h3>MISSION OBJECTIVE</h3>${info.objective}</div>
- <div class="detail req"><h3>REQUIREMENTS</h3>${info.requirements}</div>
- <div class="detail reward"><h3>OUTCOME / REWARD</h3>${info.reward}</div>
- <div class="detail"><h3>PROGRESS <span class="pct">${pct}%</span></h3><div class="bar"><i style="width:${pct}%"></i></div></div>
- <div class="detail"><h3>SUBTASKS</h3><div id="subtasks"></div></div>
- <div class="detail"><h3>MISSION NOTES</h3><textarea id="goalnote" placeholder="Add locations, materials, discoveries or next steps..."></textarea></div>`;
- let box=document.getElementById("subtasks");
- OBJ[i][1].forEach((x,j)=>{let l=document.createElement("label");l.className="check";l.innerHTML=`<input type=checkbox ${c[j]?"checked":""}>${x}`;l.querySelector("input").onchange=e=>{S.checks=S.checks||{};S.checks[i]=S.checks[i]||[...OBJ[i][2]];S.checks[i][j]=e.target.checked;save();render();openGoal(i)};box.appendChild(l)});
- let note=document.getElementById("goalnote");S.goalNotes=S.goalNotes||{};note.value=S.goalNotes[i]||"";note.oninput=()=>{S.goalNotes[i]=note.value;save()};
- dlg.showModal()
+let old={};try{old=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
+let S=Object.assign({},defaults,old);
+["missions","ships","tools","frigates","mines","bases"].forEach(k=>{if(!Array.isArray(S[k]))S[k]=defaults[k]});
+function save(){localStorage.setItem(KEY,JSON.stringify(S));render()}
+function money(n){n=Number(n)||0;return n>=1e9?(n/1e9).toFixed(2)+"B":n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(1)+"K":String(n)}
+const tabs=[["command","COMMAND"],["missions","MISSIONS"],["assets","ASSETS"],["fleet","FLEET"],["empire","EMPIRE"],["data","DATA"]];
+let tab="command";
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function setField(k,v){S[k]=["units","nanites","quicksilver","voidMotes","glyphs","galaxies"].includes(k)?Number(v):v;save()}
+function list(k,title,fields){
+ return `<div class="card"><div class="row"><h2>${title}</h2><button onclick="addRec('${k}')">+ ADD</button></div>`+
+ S[k].map((x,i)=>`<div class="item"><div class="row"><b>${esc(x.name)}</b><span class="pill">${esc(x.class||x.status||x.role||"")}</span></div><small>${esc(x.role||"")}${x.role&&x.details?" • ":""}${esc(x.details||x.notes||"")}</small><div class="actions"><button onclick="editRec('${k}',${i})">EDIT</button><button class="danger" onclick="delRec('${k}',${i})">DELETE</button></div></div>`).join("")+"</div>"
 }
-function makeList(el,items,key){let v=S[key]||[];el.innerHTML="";items.forEach((x,i)=>{let l=document.createElement("label");l.className="check";l.innerHTML=`<input type=checkbox ${v[i]?"checked":""}>${x}`;l.querySelector("input").onchange=e=>{S[key]=S[key]||[];S[key][i]=e.target.checked;save()};el.appendChild(l)})}
-document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.querySelectorAll("nav button").forEach(x=>x.classList.remove("on"));document.getElementById(b.dataset.p).classList.add("active");b.classList.add("on")});
-["missionNotes","corvetteNotes","fleetNotes","toolNotes","buildNotes","settlementNotes"].forEach(id=>{let e=document.getElementById(id);e.value=S[id]||"";e.oninput=()=>{S[id]=e.value;save()}});
-activeMission.value=S.activeMission||"They Who Returned";activeOut.textContent=activeMission.value;activeMission.oninput=()=>{S.activeMission=activeMission.value;activeOut.textContent=activeMission.value;save()};
-units.value=S.units??120000000;nanites.value=S.nanites??"";function wallet(){S.units=+units.value||0;S.nanites=+nanites.value||0;uOut.textContent=S.units>=1e6?(S.units/1e6).toFixed(S.units%1e6?1:0)+"M":S.units.toLocaleString();nOut.textContent=S.nanites?S.nanites.toLocaleString():"—";let p=Math.min(100,S.units/1e9*100);fundBar.style.width=p+"%";fundOut.textContent=p.toFixed(1).replace(".0","")+"%";save()}units.oninput=wallet;nanites.oninput=wallet;wallet();
-mould.oninput=()=>mouldOut.textContent=Math.floor((+mould.value||0)/5).toLocaleString();
-makeList(workstations,["Overseer","Scientist","Armourer","Farmer","Technician"],"ws");
-makeList(settlement,["Debt cleared","Productivity developed","Happiness developed","Population developed","Buildings upgraded","Max development"],"sett");
+function command(){
+ let mp=S.missions.length?Math.round(S.missions.reduce((a,m)=>a+(Number(m.progress)||0),0)/S.missions.length):0;
+ let stationFund=Math.min(100,Math.round((Number(S.units)||0)/10000000));
+ return `<section class="page active"><div class="grid">
+ <div class="card stat"><b>${money(S.units)}</b><span>UNITS</span></div><div class="card stat"><b>${money(S.nanites)}</b><span>NANITES</span></div>
+ <div class="card stat"><b>${S.glyphs}/16</b><span>GLYPHS</span></div><div class="card stat"><b>${S.frigates.length}/30</b><span>FRIGATES</span></div></div>
+ <div class="card"><h2>ACTIVE OPERATION</h2><b>They Who Returned</b><div class="progress"><i style="width:${mp}%"></i></div><small class="muted">Overall mission-board progress ${mp}%</small></div>
+ <div class="card"><h2>COMMAND ALERTS</h2>
+ <div class="alert">Continue <b>They Who Returned</b> → unlock full Autophage access and Staff progression.</div>
+ <div class="alert">Establish permanent <b>Runaway Mould Nanite Farm</b>.</div>
+ <div class="alert">Fleet capacity: <b>${S.frigates.length}/30</b> registered frigates.</div>
+ <div class="alert">Star Station acquisition reserve: <b>${money(S.units)}</b> / planning target ~1B+ Units.</div></div>
+ <div class="card"><h2>STAR STATION FUND</h2><div class="progress"><i style="width:${stationFund}%"></i></div><small class="muted">${stationFund}% of 1B Unit planning reserve</small></div></section>`
+}
+function missions(){return `<section class="page active"><div class="card"><div class="row"><h2>MISSION CONTROL</h2><button onclick="addMission()">+ MISSION</button></div>`+
+ S.missions.map((m,i)=>`<div class="item"><div class="row"><b>${esc(m.name)}</b><span class="pill">${esc(m.status)}</span></div><small>${esc(m.notes)}</small><div class="progress"><i style="width:${Number(m.progress)||0}%"></i></div><small>${Number(m.progress)||0}% complete</small><div class="actions"><button onclick="editMission(${i})">EDIT</button><button class="danger" onclick="delMission(${i})">DELETE</button></div></div>`).join("")+"</div></section>"}
+function assets(){return `<section class="page active">${list("ships","STARSHIP REGISTRY")}${list("tools","MULTI-TOOL ARMOURY")}<div class="card"><h2>CORVETTE PROJECT</h2><textarea onchange="setField('corvette',this.value)">${esc(S.corvette)}</textarea></div></section>`}
+function fleet(){return `<section class="page active"><div class="card"><h2>FREIGHTER COMMAND</h2><textarea onchange="setField('freighter',this.value)">${esc(S.freighter)}</textarea></div>${list("frigates","FRIGATE FLEET")}</section>`}
+function empire(){return `<section class="page active">${list("mines","INDUSTRIAL NETWORK")}${list("bases","BASE / GALAXY REGISTRY")}<div class="card"><h2>SETTLEMENT COMMAND</h2><textarea onchange="setField('settlement',this.value)">${esc(S.settlement)}</textarea></div><div class="card"><h2>STAR STATION PROJECT</h2><textarea onchange="setField('station',this.value)">${esc(S.station)}</textarea></div></section>`}
+function data(){return `<section class="page active"><div class="card"><h2>ECONOMY</h2>
+ ${field("units","Units",S.units)}${field("nanites","Nanites",S.nanites)}${field("quicksilver","Quicksilver",S.quicksilver)}${field("voidMotes","Void Motes",S.voidMotes)}
+ ${field("glyphs","Portal Glyphs",S.glyphs)}${field("galaxies","Galaxies Established",S.galaxies)}</div>
+ <div class="card"><h2>COMMAND NOTES</h2><textarea onchange="setField('notes',this.value)">${esc(S.notes)}</textarea></div>
+ <div class="card"><h2>BACKUP / RESTORE</h2><div class="actions"><button class="primary" onclick="exportData()">EXPORT JSON</button><button onclick="document.getElementById('imp').click()">IMPORT JSON</button><input id="imp" type="file" accept=".json,application/json" style="display:none" onchange="importData(this)"></div><small class="muted">Export backups before clearing Safari data or moving devices.</small></div></section>`}
+function field(k,l,v){return `<label class="muted">${l}</label><input type="number" value="${Number(v)||0}" onchange="setField('${k}',this.value)">`}
+function render(){
+ document.getElementById("app").innerHTML=({command:command,missions:missions,assets:assets,fleet:fleet,empire:empire,data:data}[tab])();
+ document.getElementById("nav").innerHTML=tabs.map(t=>`<button class="${tab===t[0]?"active":""}" onclick="tab='${t[0]}';render()">${t[1]}</button>`).join("")
+}
+function addRec(k){let name=prompt("Name");if(!name)return;let role=prompt("Role / status","");let details=prompt("Details","");S[k].push({name,role,status:role,details});save()}
+function editRec(k,i){let x=S[k][i];let name=prompt("Name",x.name);if(name===null)return;let role=prompt("Role / status",x.role||x.status||x.class||"");if(role===null)return;let details=prompt("Details",x.details||x.notes||"");if(details===null)return;Object.assign(x,{name,role,status:role,details});save()}
+function delRec(k,i){if(confirm("Delete this record?")){S[k].splice(i,1);save()}}
+function addMission(){let name=prompt("Mission name");if(!name)return;S.missions.push({name,status:"PLANNED",progress:0,notes:""});save()}
+function editMission(i){let m=S.missions[i];let name=prompt("Mission name",m.name);if(name===null)return;let status=prompt("Status",m.status);if(status===null)return;let p=prompt("Progress 0-100",m.progress);if(p===null)return;let notes=prompt("Objective / notes",m.notes);if(notes===null)return;Object.assign(m,{name,status,progress:Math.max(0,Math.min(100,Number(p)||0)),notes});save()}
+function delMission(i){if(confirm("Delete this mission?")){S.missions.splice(i,1);save()}}
+function exportData(){let b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="NMS-Command-Centre-V5-backup.json";a.click();URL.revokeObjectURL(a.href)}
+function importData(el){let f=el.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);S=Object.assign({},defaults,x);save();alert("Backup imported.")}catch(e){alert("Invalid backup file.")}};r.readAsText(f)}
 render();
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}
-</script></body></html>
+if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js");
+</script>
+</body></html>

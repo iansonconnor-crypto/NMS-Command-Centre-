@@ -2,9 +2,8 @@
   "name": "NMS Command Centre",
   "short_name": "NMS Command",
   "start_url": "./",
-  "scope": "./",
   "display": "standalone",
-  "background_color": "#03090e",
-  "theme_color": "#06131b",
-  "description": "Personal No Man's Sky progression command centre."
+  "background_color": "#050a0f",
+  "theme_color": "#07131d",
+  "description": "No Man's Sky Traveller Operations Terminal"
 }
