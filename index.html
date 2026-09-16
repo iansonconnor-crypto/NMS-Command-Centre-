@@ -50,10 +50,33 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom)) !important;}
 .modal-actions{position:sticky;bottom:-18px;background:#0d202df5;border-top:1px solid var(--line);padding:12px 0 2px;margin-top:14px;display:flex;gap:8px;justify-content:flex-end}
 @media(max-width:620px){.form-grid{grid-template-columns:1fr}.obj-top{grid-template-columns:auto 1fr}.obj-top select{grid-column:2}.obj-actions{grid-column:2}.modal-backdrop{align-items:flex-end;padding:0}.modal-sheet{border-radius:20px 20px 0 0;max-height:92vh}}
 
+
+/* V6.16 approved mission modal */
+.modal-sheet.mission-sheet{max-width:760px;padding:20px}
+.mission-section{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.mission-section-title{color:var(--cyan);font-weight:800;letter-spacing:.08em;margin-bottom:4px}
+.mission-helper{color:var(--muted);font-size:12px;margin-bottom:10px}
+.objective-empty{border:1px solid var(--line);border-radius:14px;padding:24px 14px;text-align:center;color:var(--muted);margin-top:10px}
+.objective-empty strong{display:block;color:#b8d4ff;font-size:16px;margin-bottom:5px}
+.objective-row{display:grid;grid-template-columns:28px 28px minmax(120px,1fr) 130px auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:8px;margin:7px 0;background:#08141d}
+.drag-handle{color:#8aa8c7;font-size:18px;text-align:center;cursor:grab}
+.objective-name{min-width:0}
+.objective-notes{grid-column:3 / -1;margin-top:2px}
+.progress-wrap{margin-top:12px}
+.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-bottom:6px}
+.modal-actions .danger{margin-right:auto}
+@media(max-width:620px){
+ .modal-sheet.mission-sheet{padding:16px}
+ .objective-row{grid-template-columns:22px 28px 1fr}
+ .objective-row .obj-priority{grid-column:3}
+ .objective-row .obj-actions{grid-column:3}
+ .objective-notes{grid-column:3}
+}
+
 </style>
 </head>
 <body>
-<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.15 • Unified Mission Modal</small></header>
+<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.16 • Approved Mission Forms</small></header>
 <main id="app"></main>
 <nav id="tabs" aria-label="Primary navigation"></nav>
 <script>
@@ -191,18 +214,41 @@ function renderMissionModal(){
  document.getElementById("missionModal")?.remove();
  if(!missionDraft)return;
  const m=missionDraft.data;
- const wrap=document.createElement("div");wrap.id="missionModal";wrap.className="modal-backdrop";
- wrap.innerHTML=`<div class="modal-sheet" role="dialog" aria-modal="true" aria-label="${missionDraft.mode==="create"?"Create":"Edit"} mission">
-  <div class="modal-head"><div><h2>${missionDraft.mode==="create"?"CREATE MISSION":"EDIT MISSION"}</h2><small class="muted">Manage the mission and all objectives in one place.</small></div><button class="icon-btn" onclick="closeMissionModal()">×</button></div>
-  <div class="form-grid">
-   <div><label class="field-label">MISSION NAME</label><input id="mmName" value="${esc(m.name)}" placeholder="Mission name"></div>
-   <div><label class="field-label">PRIORITY</label><select id="mmPriority">${priorityOptions(m.priority)}</select></div>
+ const creating=missionDraft.mode==="create";
+ const wrap=document.createElement("div");
+ wrap.id="missionModal";wrap.className="modal-backdrop";
+ wrap.innerHTML=`<div class="modal-sheet mission-sheet" role="dialog" aria-modal="true" aria-label="${creating?"Create mission":"Edit mission"}">
+  <div class="modal-head">
+   <div><h2>${creating?"CREATE MISSION":"EDIT MISSION"}</h2><small class="muted">${creating?"Add a new mission and set up its objectives.":"Make changes to this mission and its objectives."}</small></div>
+   <button class="icon-btn" onclick="closeMissionModal()" aria-label="Close">×</button>
   </div>
-  <label class="field-label">DESCRIPTION</label><textarea id="mmDescription" placeholder="What is this mission for?">${esc(m.description||"")}</textarea>
-  <label class="field-label">MISSION NOTES</label><textarea id="mmNotes" placeholder="Notes, requirements or reminders">${esc(m.notes||"")}</textarea>
-  <div class="row"><div><h2>OBJECTIVES</h2><small class="muted">Add, edit, complete, reorder or remove objectives.</small></div><button class="primary" onclick="modalAddObjective()">+ ADD OBJECTIVE</button></div>
-  <div id="modalObjectives"></div>
-  <div class="modal-actions"><button onclick="closeMissionModal()">CANCEL</button><button class="primary" onclick="saveMissionModal()">SAVE ${missionDraft.mode==="create"?"MISSION":"CHANGES"}</button></div>
+
+  <section class="mission-section">
+   <div class="mission-section-title">MISSION DETAILS</div>
+   <div class="form-grid">
+    <div><label class="field-label">MISSION NAME *</label><input id="mmName" value="${esc(m.name)}" placeholder="Enter mission name..."></div>
+    <div><label class="field-label">PRIORITY</label><select id="mmPriority">${priorityOptions(m.priority)}</select></div>
+   </div>
+   <label class="field-label">DESCRIPTION</label><textarea id="mmDescription" placeholder="Enter a short description of this mission...">${esc(m.description||"")}</textarea>
+   <label class="field-label">MISSION NOTES</label><textarea id="mmNotes" placeholder="Add any additional notes, tips or information...">${esc(m.notes||"")}</textarea>
+  </section>
+
+  <section class="mission-section">
+   <div class="row">
+    <div><div class="mission-section-title">OBJECTIVES${creating?"":` (${m.objectives.length})`}</div>
+    <div class="mission-helper">${creating?"Add objectives to track your progress. You can edit, reorder or delete them later.":"Edit, reorder or delete objectives. Changes are saved when you apply."}</div></div>
+    ${creating?"":'<button class="primary" onclick="modalAddObjective()">+ ADD OBJECTIVE</button>'}
+   </div>
+   ${creating?'<button class="primary" style="width:100%" onclick="modalAddObjective()">+ ADD OBJECTIVE</button>':""}
+   <div id="modalObjectives"></div>
+   ${creating?"":'<div id="modalMissionProgress" class="progress-wrap"></div>'}
+  </section>
+
+  <div class="modal-actions">
+   ${creating?"":'<button class="danger" onclick="modalDeleteMission()">DELETE MISSION</button>'}
+   <button onclick="closeMissionModal()">CANCEL</button>
+   <button class="primary" onclick="saveMissionModal()">${creating?"CREATE MISSION":"SAVE CHANGES"}</button>
+  </div>
  </div>`;
  document.body.appendChild(wrap);
  renderModalObjectives();
@@ -217,23 +263,40 @@ function syncMissionFields(){
 }
 function renderModalObjectives(){
  const box=document.getElementById("modalObjectives");if(!box||!missionDraft)return;
- box.innerHTML=missionDraft.data.objectives.map((o,i)=>`<div class="obj-editor">
-  <div class="obj-top"><input type="checkbox" ${o.done?"checked":""} onchange="modalObjectiveField(${i},'done',this.checked)">
-   <input value="${esc(o.name)}" placeholder="Objective" oninput="modalObjectiveField(${i},'name',this.value)">
-   <select onchange="modalObjectiveField(${i},'priority',this.value)">${priorityOptions(o.priority||"Medium")}</select>
-   <div class="obj-actions"><button onclick="modalMoveObjective(${i},-1)" aria-label="Move up">↑</button><button onclick="modalMoveObjective(${i},1)" aria-label="Move down">↓</button><button class="danger" onclick="modalDeleteObjective(${i})">DELETE</button></div>
-  </div>
-  <input value="${esc(o.notes||"")}" placeholder="Objective notes (optional)" oninput="modalObjectiveField(${i},'notes',this.value)">
- </div>`).join("")||`<div class="item muted">No objectives yet. Tap + ADD OBJECTIVE.</div>`;
+ const a=missionDraft.data.objectives;
+ if(!a.length){
+   box.innerHTML=`<div class="objective-empty"><strong>No objectives yet</strong>Add your first objective to get started.</div>`;
+ }else{
+   box.innerHTML=a.map((o,i)=>`<div class="objective-row">
+    <div class="drag-handle">⠿</div>
+    <input type="checkbox" ${o.done?"checked":""} onchange="modalObjectiveField(${i},'done',this.checked)">
+    <input class="objective-name" value="${esc(o.name)}" placeholder="Objective" oninput="modalObjectiveField(${i},'name',this.value)">
+    <select class="obj-priority" onchange="modalObjectiveField(${i},'priority',this.value)">${priorityOptions(o.priority||"Medium")}</select>
+    <div class="obj-actions"><button onclick="modalMoveObjective(${i},-1)" aria-label="Move up">↑</button><button onclick="modalMoveObjective(${i},1)" aria-label="Move down">↓</button><button class="danger" onclick="modalDeleteObjective(${i})" aria-label="Delete objective">🗑</button></div>
+    <input class="objective-notes" value="${esc(o.notes||"")}" placeholder="Objective notes (optional)" oninput="modalObjectiveField(${i},'notes',this.value)">
+   </div>`).join("");
+ }
+ renderModalProgress();
+}
+function renderModalProgress(){
+ const el=document.getElementById("modalMissionProgress");if(!el||!missionDraft)return;
+ const m=missionDraft.data,total=m.objectives.length,done=m.objectives.filter(o=>o.done).length,pct=total?Math.round(done/total*100):0;
+ el.innerHTML=`<div class="progress-label"><span>Progress: ${done} / ${total} complete</span><strong>${pct}%</strong></div><div class="bar"><i style="width:${pct}%"></i></div>`;
 }
 function modalAddObjective(){syncMissionFields();missionDraft.data.objectives.push({name:"",done:false,priority:"Medium",notes:""});renderModalObjectives()}
-function modalObjectiveField(i,k,v){if(missionDraft?.data.objectives[i])missionDraft.data.objectives[i][k]=v}
+function modalObjectiveField(i,k,v){if(missionDraft?.data.objectives[i]){missionDraft.data.objectives[i][k]=v;if(k==="done")renderModalProgress()}}
 function modalMoveObjective(i,dir){syncMissionFields();let a=missionDraft.data.objectives,j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];renderModalObjectives()}
 function modalDeleteObjective(i){syncMissionFields();missionDraft.data.objectives.splice(i,1);renderModalObjectives()}
+function modalDeleteMission(){
+ if(!missionDraft||missionDraft.mode!=="edit")return;
+ if(!confirm("Delete this mission?"))return;
+ S.missions.splice(missionDraft.index,1);missionDraft=null;document.getElementById("missionModal")?.remove();save();
+}
 function saveMissionModal(){
  syncMissionFields();const m=missionDraft.data;
  if(!m.name.trim()){alert("Enter a mission name.");return}
- m.name=m.name.trim();m.objectives=m.objectives.filter(o=>o.name.trim()).map(o=>({...o,name:o.name.trim()}));
+ m.name=m.name.trim();
+ m.objectives=m.objectives.filter(o=>o.name.trim()).map(o=>({...o,name:o.name.trim()}));
  const pc=mpct(m);if(m.objectives.length)m.status=pc===100?"Complete":pc>0?"Active":"Planned";
  if(missionDraft.mode==="create")S.missions.push(m);else S.missions[missionDraft.index]=m;
  missionDraft=null;document.getElementById("missionModal")?.remove();save();
