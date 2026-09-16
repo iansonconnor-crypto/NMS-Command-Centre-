@@ -27,10 +27,13 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:#061119f5;borde
 nav button{border:0;background:none;padding:5px 1px;color:var(--m);font-size:9px}nav button span{display:block;font-size:19px}nav button.on{color:var(--c)}
 .mission{border-left:3px solid var(--y)}.road{text-align:center;white-space:pre-line;color:#b9d6df}
 dialog{width:min(94vw,650px);background:#07151e;color:var(--t);border:1px solid var(--line);border-radius:16px;padding:16px}dialog::backdrop{background:#000b}
+.detail{background:#081822;border:1px solid #174357;border-radius:12px;padding:12px;margin-top:10px}
+.detail h3{margin:0 0 7px;color:var(--c);font-size:14px}.pct{color:var(--g);font-weight:700}
+.reward{border-left:3px solid var(--g);padding-left:10px}.req{border-left:3px solid var(--y);padding-left:10px}
 @media(min-width:650px){.grid{grid-template-columns:repeat(4,1fr)}}
 </style></head>
 <body>
-<header><h1>🌌 NMS COMMAND CENTRE</h1><small>v3 • Personal progression terminal</small></header>
+<header><h1>🌌 NMS COMMAND CENTRE</h1><small>v4 • Interactive mission control</small></header>
 <main>
 <section id="command" class="page active">
 <div class="grid">
@@ -104,7 +107,32 @@ const save=()=>localStorage.setItem("nmscc3",JSON.stringify(S));
 const checks=i=>S.checks?.[i]||OBJ[i][2]||[];
 function render(){
 let s="",t="";OBJ.forEach((o,i)=>{let c=checks(i),d=o[1].filter((_,j)=>c[j]).length,icon=d===o[1].length?"✅":d?"🟡":"⬜";s+=`<div class=row><span>${icon}</span><div class=grow><b>${o[0]}</b><div class=muted>${d}/${o[1].length}</div></div></div>`;t+=`<div class=row><span>${icon}</span><div class=grow><b>${o[0]}</b><div class=muted>${d}/${o[1].length}</div></div><button onclick="openGoal(${i})">OPEN</button></div>`});summary.innerHTML=s;tracker.innerHTML=t}
-function openGoal(i){dt.textContent=OBJ[i][0];db.innerHTML="";let c=checks(i);OBJ[i][1].forEach((x,j)=>{let l=document.createElement("label");l.className="check";l.innerHTML=`<input type=checkbox ${c[j]?"checked":""}>${x}`;l.querySelector("input").onchange=e=>{S.checks=S.checks||{};S.checks[i]=S.checks[i]||[...OBJ[i][2]];S.checks[i][j]=e.target.checked;save();render()};db.appendChild(l)});dlg.showModal()}
+const INFO={
+0:{objective:"Finish the core Artemis progression and retain full portal access.",requirements:"Completed.",reward:"16 glyphs, galaxy transition access and end-game story progression."},
+1:{objective:"Complete the Autophage questline.",requirements:"The Purge completed and They Who Returned triggered.",reward:"Autophage progression, Void Motes and access to staff-related rewards."},
+2:{objective:"Build your dedicated Autophage staff.",requirements:"Progress the Autophage questline and obtain the required staff components.",reward:"A complete staff Multi-Tool and a major Command Centre milestone."},
+3:{objective:"Unlock the full construction catalogue.",requirements:"Gather Salvaged Data and clear the relevant research trees/mission unlocks.",reward:"Maximum freedom for bases, farms and infrastructure."},
+4:{objective:"Finish every specialist workstation mission chain.",requirements:"Recruit and progress the Overseer, Scientist, Armourer, Farmer and Technician.",reward:"Blueprints, technology and completed base specialist progression."},
+5:{objective:"Develop your settlement as far as the current game allows.",requirements:"Manage debt, productivity, happiness, population and building opportunities.",reward:"A mature settlement and completed settlement objective."},
+6:{objective:"Finish and optimise your Corvette project.",requirements:"Acquire modules, install desired systems and continue class/stat development.",reward:"Dedicated end-game combat/exploration Corvette."},
+7:{objective:"Build an end-game freighter and frigate operation.",requirements:"Fleet expansion, freighter technology and expedition development.",reward:"Mobile fleet headquarters and stronger expedition capability."},
+8:{objective:"Build the capital reserve for your Star Station plan.",requirements:"Use mines, trade, salvage and other income streams.",reward:"Financial readiness for station acquisition and development."},
+9:{objective:"Acquire and develop your own Star Station.",requirements:"Find a suitable station, inspect its Station Core, satisfy local requirements and fund acquisition.",reward:"Station Director status and your primary end-game empire objective."}
+};
+function openGoal(i){
+ dt.textContent=OBJ[i][0]; db.innerHTML="";
+ let c=checks(i), done=OBJ[i][1].filter((_,j)=>c[j]).length, pct=Math.round(done/OBJ[i][1].length*100), info=INFO[i];
+ db.innerHTML=`<div class="detail"><h3>MISSION OBJECTIVE</h3>${info.objective}</div>
+ <div class="detail req"><h3>REQUIREMENTS</h3>${info.requirements}</div>
+ <div class="detail reward"><h3>OUTCOME / REWARD</h3>${info.reward}</div>
+ <div class="detail"><h3>PROGRESS <span class="pct">${pct}%</span></h3><div class="bar"><i style="width:${pct}%"></i></div></div>
+ <div class="detail"><h3>SUBTASKS</h3><div id="subtasks"></div></div>
+ <div class="detail"><h3>MISSION NOTES</h3><textarea id="goalnote" placeholder="Add locations, materials, discoveries or next steps..."></textarea></div>`;
+ let box=document.getElementById("subtasks");
+ OBJ[i][1].forEach((x,j)=>{let l=document.createElement("label");l.className="check";l.innerHTML=`<input type=checkbox ${c[j]?"checked":""}>${x}`;l.querySelector("input").onchange=e=>{S.checks=S.checks||{};S.checks[i]=S.checks[i]||[...OBJ[i][2]];S.checks[i][j]=e.target.checked;save();render();openGoal(i)};box.appendChild(l)});
+ let note=document.getElementById("goalnote");S.goalNotes=S.goalNotes||{};note.value=S.goalNotes[i]||"";note.oninput=()=>{S.goalNotes[i]=note.value;save()};
+ dlg.showModal()
+}
 function makeList(el,items,key){let v=S[key]||[];el.innerHTML="";items.forEach((x,i)=>{let l=document.createElement("label");l.className="check";l.innerHTML=`<input type=checkbox ${v[i]?"checked":""}>${x}`;l.querySelector("input").onchange=e=>{S[key]=S[key]||[];S[key][i]=e.target.checked;save()};el.appendChild(l)})}
 document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.querySelectorAll("nav button").forEach(x=>x.classList.remove("on"));document.getElementById(b.dataset.p).classList.add("active");b.classList.add("on")});
 ["missionNotes","corvetteNotes","fleetNotes","toolNotes","buildNotes","settlementNotes"].forEach(id=>{let e=document.getElementById(id);e.value=S[id]||"";e.oninput=()=>{S[id]=e.value;save()}});
