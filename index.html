@@ -42,7 +42,7 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom)) !important;}
 </style>
 </head>
 <body>
-<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.9 • Navigation ID Fix</small></header>
+<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.10 • Mission State Repair</small></header>
 <main id="app"></main>
 <nav id="tabs" aria-label="Primary navigation"></nav>
 <script>
@@ -140,8 +140,8 @@ function data(){return `<section class="page active"><div class="card"><h2>ECONO
 function field(k,l,v){return `<label class="muted">${l}</label><input type="number" value="${Number(v)||0}" onchange="setField('${k}',this.value)">`}
 
 function normMissions(){
-  if(!Array.isArray(state.missions)) state.missions=[];
-  state.missions.forEach(m=>{
+  if(!Array.isArray(S.missions)) S.missions=[];
+  S.missions.forEach(m=>{
     if(!m.priority)m.priority="Medium"; if(!m.createdAt)m.createdAt=Date.now();
     if(!m.description)m.description="";
     if(!m.notes)m.notes="";
@@ -159,43 +159,43 @@ function addMissionV62(){
  let desc=prompt("Mission description / goal","")||"";
  let pr=prompt("Priority: Critical, High, Medium, Low or Optional","Medium")||"Medium";
  if(!["Critical","High","Medium","Low","Optional"].includes(pr))pr="Medium";
- state.missions.push({name,description:desc,priority:pr,status:"Planned",progress:0,notes:"",objectives:[],createdAt:Date.now()});
+ S.missions.push({name,description:desc,priority:pr,status:"Planned",progress:0,notes:"",objectives:[],createdAt:Date.now()});
  save(); render();
 }
 function addObjective(mi){
  let name=prompt("Objective");if(!name)return;
  let pr=prompt("Objective priority: Critical, High, Medium, Low or Optional","Medium")||"Medium";
  if(!["Critical","High","Medium","Low","Optional"].includes(pr))pr="Medium";
- state.missions[mi].objectives.push({name,done:false,priority:pr,notes:""});save();render();
+ S.missions[mi].objectives.push({name,done:false,priority:pr,notes:""});save();
 }
 function editMissionV64(mi){
- let m=state.missions[mi];
+ let m=S.missions[mi];
  let n=prompt("Mission name",m.name);if(n===null)return;m.name=n||m.name;
  let d=prompt("Description",m.description||"");if(d!==null)m.description=d;
  let pr=prompt("Priority: Critical, High, Medium, Low or Optional",m.priority||"Medium");
  if(["Critical","High","Medium","Low","Optional"].includes(pr))m.priority=pr;
  let notes=prompt("Mission notes",m.notes||"");if(notes!==null)m.notes=notes;
- save();render();
+ save();
 }
 function editObjective(mi,oi){
- let o=state.missions[mi].objectives[oi];
+ let o=S.missions[mi].objectives[oi];
  let n=prompt("Objective",o.name);if(n!==null&&n)o.name=n;
  let pr=prompt("Priority: Critical, High, Medium, Low or Optional",o.priority||"Medium");
  if(["Critical","High","Medium","Low","Optional"].includes(pr))o.priority=pr;
  let notes=prompt("Objective notes",o.notes||"");if(notes!==null)o.notes=notes;
- save();render();
+ save();
 }
 function moveObjective(mi,oi,dir){
- let a=state.missions[mi].objectives,j=oi+dir;if(j<0||j>=a.length)return;
- [a[oi],a[j]]=[a[j],a[oi]];save();render();
+ let a=S.missions[mi].objectives,j=oi+dir;if(j<0||j>=a.length)return;
+ [a[oi],a[j]]=[a[j],a[oi]];save();
 }
-function toggleObjective(mi,oi){state.missions[mi].objectives[oi].done=!state.missions[mi].objectives[oi].done;save();render()}
-function deleteObjective(mi,oi){if(confirm("Delete this objective?")){state.missions[mi].objectives.splice(oi,1);save();render()}}
-function deleteMissionV62(mi){if(confirm("Delete this mission and its objectives?")){state.missions.splice(mi,1);save();render()}}
+function toggleObjective(mi,oi){S.missions[mi].objectives[oi].done=!S.missions[mi].objectives[oi].done;save();render()}
+function deleteObjective(mi,oi){if(confirm("Delete this objective?")){S.missions[mi].objectives.splice(oi,1);save();render()}}
+function deleteMissionV62(mi){if(confirm("Delete this mission and its objectives?")){S.missions.splice(mi,1);save();render()}}
 function missionsV62(){
  try{ normMissions(); save(); }catch(e){ console.error("Mission migration:",e); }
  let filter=window.mfilter||"All", sort=window.msort||"Priority";
- let rows=state.missions.map((m,i)=>({m,i})).filter(x=>filter==="All"||x.m.priority===filter);
+ let rows=S.missions.map((m,i)=>({m,i})).filter(x=>filter==="All"||x.m.priority===filter);
  if(sort==="Priority")rows.sort((a,b)=>priorityRank(a.m.priority)-priorityRank(b.m.priority));
  if(sort==="Progress")rows.sort((a,b)=>mpct(b.m)-mpct(a.m));
  if(sort==="Newest")rows.sort((a,b)=>(b.m.createdAt||0)-(a.m.createdAt||0));
