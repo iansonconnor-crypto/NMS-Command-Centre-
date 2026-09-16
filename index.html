@@ -27,7 +27,7 @@ nav button{border:0;background:none;padding:8px 2px;font-size:9px;color:var(--mu
 </style>
 </head>
 <body>
-<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.6 • Navigation Rebuild</small></header>
+<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.7 • Runtime Recovery</small></header>
 <main id="app"></main>
 <nav id="nav"></nav>
 <script>
@@ -178,7 +178,7 @@ function toggleObjective(mi,oi){state.missions[mi].objectives[oi].done=!state.mi
 function deleteObjective(mi,oi){if(confirm("Delete this objective?")){state.missions[mi].objectives.splice(oi,1);save();render()}}
 function deleteMissionV62(mi){if(confirm("Delete this mission and its objectives?")){state.missions.splice(mi,1);save();render()}}
 function missionsV62(){
- normMissions();
+ try{ normMissions(); save(); }catch(e){ console.error("Mission migration:",e); }
  let filter=window.mfilter||"All", sort=window.msort||"Priority";
  let rows=state.missions.map((m,i)=>({m,i})).filter(x=>filter==="All"||x.m.priority===filter);
  if(sort==="Priority")rows.sort((a,b)=>priorityRank(a.m.priority)-priorityRank(b.m.priority));
@@ -199,7 +199,6 @@ function missionsV62(){
 }
 
 function render(){
-  normMissions();
   const routes={
     command:command,
     missions:missionsV62,
@@ -210,10 +209,13 @@ function render(){
     data:data
   };
   const app=document.getElementById("app");
-  if(app) app.innerHTML=(routes[tab]||command)();
-  document.querySelectorAll("#tabs .tab").forEach(btn=>{
-    btn.classList.toggle("active",btn.dataset.tab===tab);
-  });
+  try{
+    if(app) app.innerHTML=(routes[tab]||command)();
+  }catch(err){
+    console.error("NMSCC page render error:",err);
+    if(app) app.innerHTML=`<section class="page active"><div class="card"><h2>PAGE RECOVERY</h2><p>This page hit a data error.</p><button onclick="tab='command';render()">RETURN TO COMMAND</button><small class="muted">${String(err.message||err)}</small></div></section>`;
+  }
+  document.querySelectorAll("#tabs .tab").forEach(btn=>btn.classList.toggle("active",btn.dataset.tab===tab));
 }
 function addRec(k){let name=prompt("Name");if(!name)return;let role=prompt("Role / status","");let details=prompt("Details","");S[k].push({name,role,status:role,details});save()}
 function editRec(k,i){let x=S[k][i];let name=prompt("Name",x.name);if(name===null)return;let role=prompt("Role / status",x.role||x.status||x.class||"");if(role===null)return;let details=prompt("Details",x.details||x.notes||"");if(details===null)return;Object.assign(x,{name,role,status:role,details});save()}
@@ -245,5 +247,17 @@ function initNavigation(){
 initNavigation();
 render();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js");
+
+document.addEventListener("DOMContentLoaded",function(){
+  try{
+    initNavigation();
+    render();
+  }catch(err){
+    console.error("NMSCC boot error:",err);
+    const app=document.getElementById("app");
+    if(app) app.innerHTML=`<section class="page active"><div class="card"><h2>BOOT RECOVERY</h2><p>${String(err.message||err)}</p></div></section>`;
+  }
+});
+
 </script>
 </body></html>
