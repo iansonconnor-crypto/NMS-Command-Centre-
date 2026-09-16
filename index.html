@@ -42,9 +42,9 @@ body{padding-bottom:calc(78px + env(safe-area-inset-bottom)) !important;}
 </style>
 </head>
 <body>
-<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.8 • Navigation Restored</small></header>
+<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.9 • Navigation ID Fix</small></header>
 <main id="app"></main>
-<nav id="nav"></nav>
+<nav id="tabs" aria-label="Primary navigation"></nav>
 <script>
 const KEY="nmscc3";
 const defaults={
@@ -268,8 +268,6 @@ function initNavigation(){
   });
 }
 
-initNavigation();
-render();
 if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js");
 
 document.addEventListener("DOMContentLoaded",function(){
