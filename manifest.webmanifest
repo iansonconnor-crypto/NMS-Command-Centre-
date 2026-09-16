@@ -1,9 +1,8 @@
 {
-  "name":"NMS Command Centre V6",
-  "short_name":"NMS Command",
-  "start_url":"./",
-  "display":"standalone",
-  "background_color":"#050a0f",
-  "theme_color":"#07131d",
-  "description":"No Man's Sky Traveller Operations Terminal with Knowledge Core"
+  "name": "NMS Command Centre",
+  "short_name": "NMSCC",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#030b11",
+  "theme_color": "#06131d"
 }

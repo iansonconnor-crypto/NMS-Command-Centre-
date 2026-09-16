@@ -1,404 +1,122 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07131d">
-<link rel="manifest" href="./manifest.webmanifest">
-<title>NMS Command Centre V5</title>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06131d"><link rel="manifest" href="manifest.webmanifest">
+<title>NMS Command Centre</title>
 <style>
-:root{--bg:#050a0f;--panel:#0c1720;--panel2:#101f2b;--line:#203745;--txt:#eaf7ff;--muted:#88a6b8;--cyan:#38d9ff;--green:#4cf0a5;--amber:#ffc857;--red:#ff6b7a}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07131d,#050a0f 35%);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,sans-serif;padding-bottom:88px}
-header{position:sticky;top:0;z-index:5;padding:16px;background:#07131deF;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
-h1{font-size:19px;margin:0;letter-spacing:.08em}header small{color:var(--cyan)}
-main{max-width:900px;margin:auto;padding:14px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:linear-gradient(145deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:15px;padding:14px;margin-bottom:11px}
-.stat b{display:block;font-size:22px;color:var(--cyan)}.stat span,.muted{color:var(--muted);font-size:12px}
-h2{font-size:14px;letter-spacing:.09em;color:var(--cyan);margin:5px 0 12px}.row{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:8px 0}
-button,input,textarea,select{font:inherit}button{background:#132a38;color:var(--txt);border:1px solid #285064;border-radius:10px;padding:9px 11px}button.primary{border-color:var(--cyan);color:var(--cyan)}button.danger{color:var(--red)}
-input,textarea,select{width:100%;background:#071119;border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:10px;margin:4px 0}textarea{min-height:80px;resize:vertical}
-.item{padding:10px;border:1px solid var(--line);border-radius:11px;margin:7px 0}.item b{font-size:14px}.item small{display:block;color:var(--muted);margin-top:3px}
-.progress{height:7px;background:#071119;border-radius:9px;overflow:hidden;margin-top:8px}.progress i{display:block;height:100%;background:var(--green)}
-.alert{border-left:3px solid var(--amber);padding-left:10px;margin:9px 0;font-size:13px}
-nav{position:fixed;bottom:0;left:0;right:0;z-index:6;background:#07131df5;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(7,1fr);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-nav button{border:0;background:none;padding:8px 2px;font-size:9px;color:var(--muted)}nav button.active{color:var(--cyan)}
-.page{display:none}.page.active{display:block}.pill{font-size:11px;padding:3px 7px;border:1px solid var(--line);border-radius:20px;color:var(--green)}
-.actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{font-size:12px;padding:6px 8px}
-@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
-
-#tabs{
-  position:fixed !important;
-  left:0; right:0; bottom:0;
-  z-index:9999 !important;
-  display:grid !important;
-  grid-template-columns:repeat(7,minmax(72px,1fr));
-  overflow-x:auto;
-  -webkit-overflow-scrolling:touch;
-  padding-bottom:env(safe-area-inset-bottom);
-  background:#07131d;
-}
-#tabs .tab{min-width:72px;display:block !important;}
-body{padding-bottom:calc(78px + env(safe-area-inset-bottom)) !important;}
-
-
-.modal-backdrop{position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,.72);backdrop-filter:blur(5px);display:flex;align-items:flex-end;justify-content:center;padding:14px}
-.modal-sheet{width:min(760px,100%);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#0b1822,#0d202d);border:1px solid #2a4b5e;border-radius:20px;padding:18px;box-shadow:0 20px 70px #000}
-.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.modal-head h2{font-size:19px;margin:0 0 4px}.icon-btn{width:40px;height:40px;padding:0;font-size:22px}
-.form-grid{display:grid;grid-template-columns:1fr 180px;gap:12px}.field-label{display:block;color:var(--muted);font-size:12px;margin-top:10px}
-.obj-editor{border:1px solid var(--line);border-radius:13px;padding:10px;margin:8px 0;background:#09151e}
-.obj-top{display:grid;grid-template-columns:auto 1fr 130px auto;gap:8px;align-items:center}.obj-top input[type=checkbox]{width:auto}
-.obj-actions{display:flex;gap:6px}.obj-actions button{padding:6px 9px}
-.modal-actions{position:sticky;bottom:-18px;background:#0d202df5;border-top:1px solid var(--line);padding:12px 0 2px;margin-top:14px;display:flex;gap:8px;justify-content:flex-end}
-@media(max-width:620px){.form-grid{grid-template-columns:1fr}.obj-top{grid-template-columns:auto 1fr}.obj-top select{grid-column:2}.obj-actions{grid-column:2}.modal-backdrop{align-items:flex-end;padding:0}.modal-sheet{border-radius:20px 20px 0 0;max-height:92vh}}
-
-
-/* V6.16 approved mission modal */
-.modal-sheet.mission-sheet{max-width:760px;padding:20px}
-.mission-section{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
-.mission-section-title{color:var(--cyan);font-weight:800;letter-spacing:.08em;margin-bottom:4px}
-.mission-helper{color:var(--muted);font-size:12px;margin-bottom:10px}
-.objective-empty{border:1px solid var(--line);border-radius:14px;padding:24px 14px;text-align:center;color:var(--muted);margin-top:10px}
-.objective-empty strong{display:block;color:#b8d4ff;font-size:16px;margin-bottom:5px}
-.objective-row{display:grid;grid-template-columns:28px 28px minmax(120px,1fr) 130px auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:11px;padding:8px;margin:7px 0;background:#08141d}
-.drag-handle{color:#8aa8c7;font-size:18px;text-align:center;cursor:grab}
-.objective-name{min-width:0}
-.objective-notes{grid-column:3 / -1;margin-top:2px}
-.progress-wrap{margin-top:12px}
-.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-bottom:6px}
-.modal-actions .danger{margin-right:auto}
-@media(max-width:620px){
- .modal-sheet.mission-sheet{padding:16px}
- .objective-row{grid-template-columns:22px 28px 1fr}
- .objective-row .obj-priority{grid-column:3}
- .objective-row .obj-actions{grid-column:3}
- .objective-notes{grid-column:3}
-}
-
-</style>
-</head>
-<body>
-<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.16 • Approved Mission Forms</small></header>
-<main id="app"></main>
-<nav id="tabs" aria-label="Primary navigation"></nav>
+:root{--bg:#030b11;--panel:#0a1822;--panel2:#0d202c;--line:#1d3d50;--cyan:#27c9ff;--text:#e9f4ff;--muted:#88a5b9;--green:#31e59b;--red:#ff4051;--orange:#ff8b25;--yellow:#ffd429;--blue:#25aaff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 50% -20%,#0d2a3d 0,#030b11 35%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}.shell{max-width:1500px;margin:auto;min-height:100vh}.top{height:92px;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:16px 24px;justify-content:space-between;background:#06131de8;position:sticky;top:0;z-index:20}.brand h1{font-size:23px;letter-spacing:.08em;margin:0}.brand small{color:var(--cyan);letter-spacing:.25em}.stats{display:flex;gap:20px;color:#b9d8ed}.layout{display:grid;grid-template-columns:180px 1fr;min-height:calc(100vh - 92px)}nav{border-right:1px solid var(--line);padding:14px 8px;background:#06131d;position:sticky;top:92px;height:calc(100vh - 92px)}nav button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:13px 12px;color:#9eb8ce;border-radius:8px;margin:3px 0}nav button.active,nav button:hover{background:#0c3853;color:#fff;border-left:3px solid var(--cyan)}main{padding:16px}.grid{display:grid;grid-template-columns:minmax(350px,500px) minmax(460px,1fr);gap:14px}.panel{background:linear-gradient(145deg,#081722,#0b1d29);border:1px solid var(--line);border-radius:12px;padding:14px}.title{font-weight:850;font-size:21px;letter-spacing:.04em}.sub{color:var(--muted);font-size:13px}.row{display:flex;align-items:center;gap:8px;justify-content:space-between}.filters{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.filters button,.btn{border:1px solid #28536a;background:#0b1b26;border-radius:8px;padding:9px 12px}.btn.primary{border-color:var(--cyan);color:#8be5ff}.btn.danger{border-color:var(--red);color:#ff7580}.search{width:100%;background:#06121b;border:1px solid #28536a;border-radius:8px;padding:10px;margin:8px 0}.mission{display:grid;grid-template-columns:1fr auto;gap:8px;border:1px solid #18384b;border-radius:9px;padding:11px;margin:7px 0;background:#08151e}.mission.selected{border-color:var(--cyan);box-shadow:0 0 0 1px #0fa8df inset}.mission h3{margin:0 0 3px;color:#eaf6ff;font-size:15px}.badge{border:1px solid currentColor;border-radius:999px;padding:3px 9px;font-size:11px;white-space:nowrap}.critical{color:var(--red)}.high{color:var(--orange)}.medium{color:var(--yellow)}.low{color:var(--green)}.optional{color:#8aa5ba}.complete{color:var(--green)}.bar{height:6px;background:#07111a;border-radius:99px;overflow:hidden;margin-top:7px}.bar i{display:block;height:100%;background:var(--blue)}.detail h2{font-size:25px;margin:10px 0 4px}.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:15px 0}.tabs button{background:#07151f;border:1px solid #22465b;padding:10px;border-radius:7px}.tabs .active{border-color:var(--cyan)}.objective{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border:1px solid #18384b;border-radius:8px;padding:10px;margin:6px 0}.objective input{width:19px;height:19px}.objective.done .otext{text-decoration:line-through;color:#7991a2}.hint{background:#0c2130;border:1px solid #275069;border-radius:8px;padding:10px;color:#9db9cc;font-size:12px;margin-top:12px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card{background:#0a1924;border:1px solid var(--line);border-radius:10px;padding:14px}.modalbg{position:fixed;inset:0;background:#000b;z-index:100;display:flex;align-items:center;justify-content:center;padding:12px}.modal{width:min(760px,100%);max-height:92vh;overflow:auto;background:#091923;border:1px solid #2a5870;border-radius:15px;padding:18px}.formgrid{display:grid;grid-template-columns:1fr 180px;gap:10px}.field{display:block;color:var(--muted);font-size:12px;margin:10px 0 4px}.modal input,.modal select,.modal textarea{width:100%;background:#06131d;border:1px solid #28536a;border-radius:8px;padding:10px}.modal textarea{min-height:72px}.objedit{display:grid;grid-template-columns:1fr 140px auto;gap:7px;border:1px solid var(--line);padding:8px;border-radius:8px;margin:6px 0}.actions{display:flex;justify-content:flex-end;gap:8px;position:sticky;bottom:-18px;background:#091923;padding:12px 0 0}.mobilebar{display:none}
+@media(max-width:900px){.top{height:auto}.stats{display:none}.layout{display:block}.grid{grid-template-columns:1fr}.detail{display:none}.detail.open{display:block}nav{display:none}.mobilebar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:30;background:#06131df5;border-top:1px solid var(--line);overflow-x:auto;padding-bottom:env(safe-area-inset-bottom)}.mobilebar button{min-width:94px;flex:1;border:0;background:transparent;color:#9eb8ce;padding:13px 8px}.mobilebar .active{color:var(--cyan)}main{padding-bottom:75px}.formgrid{grid-template-columns:1fr}.objedit{grid-template-columns:1fr 120px}.objedit .del{grid-column:2}.brand h1{font-size:18px}}
+</style></head>
+<body><div class="shell"><header class="top"><div class="brand"><h1>ATLAS // NMS COMMAND CENTRE</h1><small>EXPLORE · BUILD · COMPLETE · DOMINATE</small></div><div class="stats"><span id="shipstat">Embers Defender TB4</span><span id="unitstat">120.0M Units</span><span id="nanstat">0 Nanites</span></div></header>
+<div class="layout"><nav id="desktopNav"></nav><main id="app"></main></div><div class="mobilebar" id="mobileNav"></div></div>
 <script>
 const KEY="nmscc3";
-const defaults={
- units:120000000,nanites:0,quicksilver:0,voidMotes:0,glyphs:16,galaxies:2,
- missions:[
-  {name:"They Who Returned",status:"ACTIVE",progress:35,notes:"Continue Autophage storyline; unlock full Autophage access and Void Motes."},
-  {name:"Autophage Staff",status:"PLANNED",progress:0,notes:"Earn Void Motes, acquire staff components and assemble Voltaic Staff."},
-  {name:"Construction Blueprints",status:"IN PROGRESS",progress:20,notes:"Unlock every construction blueprint."},
-  {name:"Base Specialist Missions",status:"IN PROGRESS",progress:10,notes:"Complete Overseer, Scientist, Armourer, Farmer and Technician chains."},
-  {name:"Max Settlement",status:"IN PROGRESS",progress:15,notes:"Develop settlement to maximum practical class/productivity/happiness."},
-  {name:"Star Station Project",status:"END GOAL",progress:5,notes:"Build standing, salvage capability and capital; inspect candidate Station Cores."}
- ],
- ships:[{name:"Embers Defender TB4",class:"A",role:"Main Starship",details:"Damage 398.0 • Shield 210.9 • Hyperdrive 347.0 • Manoeuvrability 432.0"}],
- tools:[
-  {name:"S-Class Weapon Multi-Tool",class:"S",role:"Weapon reserve",details:"Acquired at system station; not intended as main Multi-Tool."},
-  {name:"Experimental Multi-Tool",class:"S",role:"Scanner",details:"PLANNED • Optimize scanner modules and supercharged slots."}
- ],
- frigates:[],
- mines:[
-  {name:"Gold Mine",status:"OPERATIONAL",details:"S-Class hotspot • independent extraction networks."},
-  {name:"Activated Indium Mine",status:"OPERATIONAL",details:"B-Class hotspot • scalable independent networks."},
-  {name:"Runaway Mould Farm",status:"PLANNED",details:"Curious Deposits → Runaway Mould → Nanites."}
- ],
- bases:[],
- freighter:"Freighter owned. Develop fleet, storage, Matter Beam and fleet technology.",
- corvette:"Corvette under development. Medium combat/exploration flagship concept. Tractor Beam planned.",
- settlement:"Settlement owned. Goal: maximize productivity, happiness, buildings and class.",
- station:"End goal: own and develop a Star Station. Build standing, salvage capability and ~1B+ Unit acquisition reserve.",
- notes:""
-};
-let old={};try{old=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){}
-let S=Object.assign({},defaults,old);
-["missions","ships","tools","frigates","mines","bases"].forEach(k=>{if(!Array.isArray(S[k]))S[k]=defaults[k]});
+const priorityOrder={Critical:0,High:1,Medium:2,Low:3,Optional:4};
+const seedMissions=[
+{id:"returned",name:"They Who Returned",description:"Continue the Autophage storyline and gain full access to Autophage content.",priority:"Critical",status:"Active",notes:"Autophage storyline is your current active operation.",createdAt:Date.now()-9000,objectives:[
+{name:"Awaken the Autophage",notes:"Trigger the They Who Returned storyline.",priority:"Critical",done:true},
+{name:"Trigger They Who Returned",notes:"Begin the Autophage storyline.",priority:"Critical",done:true},
+{name:"Progress They Who Returned",notes:"Continue the active Autophage story missions.",priority:"High",done:false},
+{name:"Locate Autophage Camps",notes:"Find and visit multiple Autophage camps.",priority:"High",done:false},
+{name:"Collect Void Motes",notes:"Build a reserve through Autophage activities.",priority:"High",done:false},
+{name:"Unlock Staff Component Access",notes:"Reach the point where staff parts can be acquired.",priority:"Medium",done:false}]},
+{id:"staff",name:"Autophage Staff",description:"Obtain and develop your Voltaic Staff.",priority:"High",status:"Planned",notes:"Begins after sufficient Autophage progression.",createdAt:Date.now()-8000,objectives:[
+{name:"Unlock Autophage staff access",priority:"Critical",done:false,notes:"Progress They Who Returned."},
+{name:"Earn Void Motes",priority:"High",done:false,notes:"Fund staff component purchases."},
+{name:"Acquire staff head",priority:"High",done:false,notes:"Choose preferred component."},
+{name:"Acquire staff core",priority:"High",done:false,notes:"Choose preferred component."},
+{name:"Acquire staff pole",priority:"High",done:false,notes:"Choose preferred component."},
+{name:"Assemble Voltaic Staff",priority:"Medium",done:false,notes:"Assemble at an Autophage terminal."},
+{name:"Upgrade and optimise Staff",priority:"Low",done:false,notes:"Improve class, modules and supercharged layout."}]},
+{id:"mould",name:"Runaway Mould Nanite Farm",description:"Establish a permanent Curious Deposit Nanite farm.",priority:"High",status:"Planned",notes:"Permanent Nanite source for upgrades.",createdAt:Date.now()-7000,objectives:[
+{name:"Locate Curious Deposits",priority:"Critical",done:false,notes:"Find a suitable cluster."},
+{name:"Claim farm site",priority:"High",done:false,notes:"Place a Base Computer."},
+{name:"Build containment walls",priority:"High",done:false,notes:"Stop mould balls escaping."},
+{name:"Install teleport loop",priority:"Medium",done:false,notes:"Enable respawn cycling."},
+{name:"Install refiners",priority:"Medium",done:false,notes:"Refine Runaway Mould into Nanites."},
+{name:"Test repeatable harvest cycle",priority:"Low",done:false,notes:"Confirm reliable respawn and refinement."}]},
+{id:"blueprints",name:"Construction Blueprints",description:"Unlock every construction blueprint.",priority:"Medium",status:"Active",notes:"Long-term completion objective.",createdAt:Date.now()-6000,objectives:[
+{name:"Audit unlocked construction catalogue",priority:"High",done:false,notes:"Identify missing categories."},
+{name:"Collect Salvaged Data",priority:"High",done:false,notes:"Build a blueprint currency reserve."},
+{name:"Unlock core base structures",priority:"High",done:false,notes:"Complete primary structural categories."},
+{name:"Unlock power and industry technology",priority:"Medium",done:false,notes:"Complete utility categories."},
+{name:"Unlock decoration and specialist parts",priority:"Low",done:false,notes:"Finish remaining catalogue."}]},
+{id:"specialists",name:"Base Specialist Missions",description:"Complete every workstation/base specialist mission chain.",priority:"Medium",status:"Planned",notes:"Overseer, Scientist, Armourer, Farmer and Technician chains.",createdAt:Date.now()-5000,objectives:[
+{name:"Complete Overseer chain",priority:"High",done:false,notes:""},
+{name:"Complete Scientist chain",priority:"High",done:false,notes:""},
+{name:"Complete Armourer chain",priority:"Medium",done:false,notes:""},
+{name:"Complete Farmer chain",priority:"Medium",done:false,notes:""},
+{name:"Complete Technician chain",priority:"Medium",done:false,notes:""}]},
+{id:"settlement",name:"Settlement Development",description:"Bring your settlement to its maximum practical potential.",priority:"High",status:"Active",notes:"Continue construction opportunities and improve settlement metrics.",createdAt:Date.now()-4000,objectives:[
+{name:"Clear settlement debt",priority:"Critical",done:false,notes:""},
+{name:"Keep construction opportunities active",priority:"High",done:false,notes:""},
+{name:"Increase productivity",priority:"High",done:false,notes:""},
+{name:"Increase citizen happiness",priority:"High",done:false,notes:""},
+{name:"Expand useful settlement buildings",priority:"Medium",done:false,notes:""},
+{name:"Improve settlement class",priority:"Medium",done:false,notes:""},
+{name:"Reach stable maximum development",priority:"Low",done:false,notes:""}]},
+{id:"corvette",name:"Corvette Development",description:"Complete and optimise your medium combat/exploration Corvette.",priority:"Medium",status:"Active",notes:"Nomad's Reach concept: forward cockpit, central spine, symmetrical weapon pods and rear engine cluster.",createdAt:Date.now()-3000,objectives:[
+{name:"Collect advanced Corvette modules",priority:"High",done:false,notes:"Target 20–30+ useful modules before finalising."},
+{name:"Install reactor and core systems",priority:"High",done:false,notes:""},
+{name:"Install engines and shields",priority:"High",done:false,notes:""},
+{name:"Install combat systems",priority:"Medium",done:false,notes:""},
+{name:"Install Tractor Beam",priority:"Medium",done:false,notes:"Pairs with your Gravitino Coil for Cosmos salvage."},
+{name:"Complete Nomad's Reach final layout",priority:"Low",done:false,notes:""}]},
+{id:"fleet",name:"Freighter & Frigate Fleet",description:"Develop your freighter and build a strong frigate fleet.",priority:"Medium",status:"Active",notes:"Freighter owned; fleet development remains in progress.",createdAt:Date.now()-2000,objectives:[
+{name:"Build initial balanced frigate roster",priority:"High",done:false,notes:"Recruit across expedition specialities."},
+{name:"Prioritise Industrial frigates",priority:"High",done:false,notes:"Useful for Salvaged Frigate Module opportunities."},
+{name:"Expand Fleet Command capacity",priority:"Medium",done:false,notes:""},
+{name:"Unlock priority freighter technology",priority:"Medium",done:false,notes:"Matter Beam and useful upgrades."},
+{name:"Develop frigates through expeditions",priority:"Medium",done:false,notes:""},
+{name:"Progress toward 30-frigate fleet",priority:"Low",done:false,notes:""}]},
+{id:"station",name:"Star Station Project",description:"Prepare for, acquire and develop your own Star Station.",priority:"High",status:"Active",notes:"Ultimate NMS Command Centre objective.",createdAt:Date.now()-1000,objectives:[
+{name:"Build Star Station acquisition fund",priority:"Critical",done:false,notes:"Current reserve: 120M Units. Planning target approximately 1B+."},
+{name:"Continue Cosmos salvage preparation",priority:"High",done:false,notes:"Gravitino Coil acquired; Tractor Beam remains useful."},
+{name:"Build local race and Guild standing",priority:"High",done:false,notes:"Prepare for Station Core requirements."},
+{name:"Complete required salvage contracts",priority:"High",done:false,notes:"Requirements vary by candidate station."},
+{name:"Inspect candidate Station Cores",priority:"Medium",done:false,notes:"Compare acquisition requirements."},
+{name:"Acquire a Star Station",priority:"Critical",done:false,notes:"Claim an eligible unowned station."},
+{name:"Develop station interior and exterior",priority:"Medium",done:false,notes:""},
+{name:"Establish station as operational headquarters",priority:"Low",done:false,notes:""}]},
+{id:"purge",name:"The Purge / Artemis Story",description:"Main Artemis storyline completed; green/lush galaxy selected.",priority:"Optional",status:"Complete",notes:"Completed milestone.",createdAt:Date.now()-12000,objectives:[{name:"Complete The Purge",priority:"Critical",done:true,notes:"Completed."},{name:"Choose Lush galaxy",priority:"Low",done:true,notes:"Completed."}]},
+{id:"glyphs",name:"Portal Glyphs",description:"Obtain all Portal Glyphs.",priority:"Optional",status:"Complete",notes:"16/16 obtained.",createdAt:Date.now()-11000,objectives:[{name:"Obtain 16/16 Portal Glyphs",priority:"Critical",done:true,notes:"Completed."}]}
+];
+const defaultState={units:120000000,nanites:0,glyphs:16,frigates:0,missions:seedMissions,ships:[{name:"Embers Defender TB4",class:"A",notes:"Authenticated Starship"}],tools:[],mines:[{name:"Gold Mine",class:"S",status:"Operational"},{name:"Activated Indium Mine",class:"B",status:"Operational"}],bases:[],notes:""};
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function load(){try{let old=JSON.parse(localStorage.getItem(KEY)||"null");if(!old)return clone(defaultState);let s={...clone(defaultState),...old};/* migrate personalised mission seeds without deleting user-created missions */let byId=new Map((s.missions||[]).map(m=>[m.id,m]));for(const sm of seedMissions){let existing=byId.get(sm.id);if(!existing){s.missions.push(clone(sm));continue}if(!existing.objectives||existing.objectives.length===0){existing.objectives=clone(sm.objectives);existing.description=existing.description||sm.description;existing.notes=existing.notes||sm.notes}}return s}catch(e){return clone(defaultState)}}
+let S=load(),view="missions",selected="returned",filter="All",search="",draft=null;
 function save(){localStorage.setItem(KEY,JSON.stringify(S));render()}
-function uid(){return "m-"+Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,8)}
-function money(n){n=Number(n)||0;return n>=1e9?(n/1e9).toFixed(2)+"B":n>=1e6?(n/1e6).toFixed(1)+"M":n>=1e3?(n/1e3).toFixed(1)+"K":String(n)}
-const tabs=[["command","COMMAND"],["missions","MISSIONS"],["assets","ASSETS"],["fleet","FLEET"],["empire","EMPIRE"],["knowledge","KNOWLEDGE"],["data","DATA"]];
-let tab="command";
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function setField(k,v){S[k]=["units","nanites","quicksilver","voidMotes","glyphs","galaxies"].includes(k)?Number(v):v;save()}
-function list(k,title,fields){
- return `<div class="card"><div class="row"><h2>${title}</h2><button onclick="addRec('${k}')">+ ADD</button></div>`+
- S[k].map((x,i)=>`<div class="item"><div class="row"><b>${esc(x.name)}</b><span class="pill">${esc(x.class||x.status||x.role||"")}</span></div><small>${esc(x.role||"")}${x.role&&x.details?" • ":""}${esc(x.details||x.notes||"")}</small><div class="actions"><button onclick="editRec('${k}',${i})">EDIT</button><button class="danger" onclick="delRec('${k}',${i})">DELETE</button></div></div>`).join("")+"</div>"
-}
-function command(){
- let mp=S.missions.length?Math.round(S.missions.reduce((a,m)=>a+(Number(m.progress)||0),0)/S.missions.length):0;
- let stationFund=Math.min(100,Math.round((Number(S.units)||0)/10000000));
- return `<section class="page active"><div class="grid">
- <div class="card stat"><b>${money(S.units)}</b><span>UNITS</span></div><div class="card stat"><b>${money(S.nanites)}</b><span>NANITES</span></div>
- <div class="card stat"><b>${S.glyphs}/16</b><span>GLYPHS</span></div><div class="card stat"><b>${S.frigates.length}/30</b><span>FRIGATES</span></div></div>
- <div class="card"><h2>ACTIVE OPERATION</h2><b>They Who Returned</b><div class="progress"><i style="width:${mp}%"></i></div><small class="muted">Overall mission-board progress ${mp}%</small></div>
- <div class="card"><h2>COMMAND ALERTS</h2><div class="alert"><b>Knowledge Core online:</b> searchable offline NMS reference database installed.</div>
- <div class="alert">Continue <b>They Who Returned</b> → unlock full Autophage access and Staff progression.</div>
- <div class="alert">Establish permanent <b>Runaway Mould Nanite Farm</b>.</div>
- <div class="alert">Fleet capacity: <b>${S.frigates.length}/30</b> registered frigates.</div>
- <div class="alert">Star Station acquisition reserve: <b>${money(S.units)}</b> / planning target ~1B+ Units.</div></div>
- <div class="card"><h2>STAR STATION FUND</h2><div class="progress"><i style="width:${stationFund}%"></i></div><small class="muted">${stationFund}% of 1B Unit planning reserve</small></div></section>`
-}
-function missions(){return `<section class="page active"><div class="card"><div class="row"><h2>MISSION CONTROL</h2><button onclick="addMission()">+ MISSION</button></div>`+
- S.missions.map((m,i)=>`<div class="item"><div class="row"><b>${esc(m.name)}</b><span class="pill">${esc(m.status)}</span></div><small>${esc(m.notes)}</small><div class="progress"><i style="width:${Number(m.progress)||0}%"></i></div><small>${Number(m.progress)||0}% complete</small><div class="actions"><button onclick="editMission(${i})">EDIT</button><button class="danger" onclick="delMission(${i})">DELETE</button></div></div>`).join("")+"</div></section>"}
-function assets(){return `<section class="page active">${list("ships","STARSHIP REGISTRY")}${list("tools","MULTI-TOOL ARMOURY")}<div class="card"><h2>CORVETTE PROJECT</h2><textarea onchange="setField('corvette',this.value)">${esc(S.corvette)}</textarea></div></section>`}
-function fleet(){return `<section class="page active"><div class="card"><h2>FREIGHTER COMMAND</h2><textarea onchange="setField('freighter',this.value)">${esc(S.freighter)}</textarea></div>${list("frigates","FRIGATE FLEET")}</section>`}
-function empire(){return `<section class="page active">${list("mines","INDUSTRIAL NETWORK")}${list("bases","BASE / GALAXY REGISTRY")}<div class="card"><h2>SETTLEMENT COMMAND</h2><textarea onchange="setField('settlement',this.value)">${esc(S.settlement)}</textarea></div><div class="card"><h2>STAR STATION PROJECT</h2><textarea onchange="setField('station',this.value)">${esc(S.station)}</textarea></div></section>`}
-
-const KB=[{"cat":"Getting Started","title":"Core progression","text":"Repair your ship, establish access to the Space Anomaly, expand Exosuit inventory, learn core crafting/refining, and follow the primary mission chains. Use the Catalogue & Guide to pin recipes and progression goals.","tags":"beginner anomaly exosuit missions crafting guide","sub":"Overview","confidence":"Established"},{"cat":"Resources","title":"Chromatic Metal","text":"Refine stellar metals such as Copper, Cadmium, Emeril and Indium into Chromatic Metal. It is a core construction and technology resource.","tags":"copper cadmium emeril indium refine","sub":"Overview","confidence":"Established"},{"cat":"Resources","title":"Oxygen","text":"Harvest oxygen-rich flora, purchase when available, refine suitable materials, or establish a gas-extraction operation on an Oxygen hotspot for bulk supply.","tags":"oxygen gas extractor hotspot life support","sub":"Overview","confidence":"Established"},{"cat":"Resources","title":"Carbon","text":"Harvest planetary flora with the Mining Beam or starship weapons. Standing Planters and freighter/base farming can provide renewable supplies.","tags":"carbon condensed carbon flora","sub":"Overview","confidence":"Established"},{"cat":"Resources","title":"Runaway Mould / Nanites","text":"Curious Deposits yield Runaway Mould. Refine 5 Runaway Mould into 1 Nanite. A permanent Curious Deposit base is an effective repeatable Nanite farm.","tags":"nanites curious deposits mould farm","sub":"Overview","confidence":"Established"},{"cat":"Exploration","title":"Portals and Glyphs","text":"Portals accept 12-glyph addresses for precise planetary travel. Glyphs are learned through progression and Traveller-related methods. Establish bases in useful galaxies for easy teleporter return.","tags":"portal glyph address galaxy travel","sub":"Overview","confidence":"Established"},{"cat":"Exploration","title":"Galaxy types","text":"Different galaxy types change the probability distribution of planet types. Teleporter-linked bases make maintaining gateways across galaxies practical.","tags":"lush harsh empty normal galaxy","sub":"Overview","confidence":"Established"},{"cat":"Starships","title":"Starship technology","text":"Upgrade weapons, shields, pulse systems, launch systems and hyperdrive. Procedural upgrade modules are strongest when arranged with useful adjacency and supercharged slots.","tags":"ship upgrades supercharged adjacency","sub":"Overview","confidence":"Established"},{"cat":"Starships","title":"Infra-Knife","text":"The Infra-Knife Accelerator is a high-output starship weapon. Pair its dedicated technology with strong procedural modules and good adjacency for combat builds.","tags":"combat weapon infra knife q resonator","sub":"Overview","confidence":"Established"},{"cat":"Multi-Tools","title":"Scanner build","text":"Experimental Multi-Tools are strong scanning platforms. Install high-quality Scanner modules, preserve adjacency, and prioritize strong fauna/flora bonuses in supercharged slots.","tags":"experimental scanner fauna flora units","sub":"Overview","confidence":"Established"},{"cat":"Multi-Tools","title":"Neutron Cannon","text":"A strong close-to-mid-range Multi-Tool combat option. Combine its supporting technology and procedural upgrades, then optimize adjacency and supercharged slots.","tags":"weapon neutron cannon combat","sub":"Overview","confidence":"Established"},{"cat":"Freighters","title":"Freighter development","text":"Freighters provide mobile base facilities, storage and fleet command. Salvaged Frigate Modules unlock freighter technologies; Cargo Bulkheads expand inventory.","tags":"freighter matter beam salvaged frigate module cargo bulkhead","sub":"Overview","confidence":"Established"},{"cat":"Freighters","title":"Frigate fleet","text":"Build a balanced fleet across Combat, Exploration, Industrial, Trade and Support roles. Fleet expeditions return resources, units and specialist rewards.","tags":"frigate expedition combat industrial trade support exploration","sub":"Overview","confidence":"Established"},{"cat":"Corvettes","title":"Corvette-class starships","text":"Corvettes are large bespoke ships assembled from structural, habitation, engine, reactor, shield, weapon and decorative modules. They support furnished interiors and passengers.","tags":"corvette voyagers modules workshop","sub":"Overview","confidence":"Established"},{"cat":"Corvettes","title":"Tractor Beam","text":"Cosmos adds a Corvette Tractor Beam for gathering physical salvage and minerals into the Corvette hold. It can be purchased with other Corvette parts at the Corvette Workshop.","tags":"tractor beam salvage cosmos gravitino coil","sub":"Overview","confidence":"Established"},{"cat":"Cosmos","title":"Deep-space salvage","text":"Cosmos adds persistent deep-space points of interest, hulks, outposts and salvage operations. A Gravitino Coil plus a Corvette Tractor Beam provides the key handling tools for physical salvage.","tags":"space hulk outpost salvage gravitino coil","sub":"Overview","confidence":"Established"},{"cat":"Cosmos","title":"Star Station Directorship","text":"Cosmos allows Travellers to become directors of eligible Space Stations after proving themselves to local authorities. Directors can reshape interiors, add rooms and decorate station exteriors.","tags":"station director cosmos alliance space station","sub":"Overview","confidence":"Established"},{"cat":"Cosmos","title":"Galactic Alliances","text":"Station directors can found alliances with a custom name and banner. Alliances coordinate players and can expand their presence across systems.","tags":"alliance station multiplayer","sub":"Overview","confidence":"Established"},{"cat":"Autophage","title":"Autophage progression","text":"The Autophage storyline opens robotic assignments, rituals, rewards and staff-related progression. Continue They Who Returned and associated Autophage content to expand access.","tags":"they who returned echoes staff void motes","sub":"Overview","confidence":"Established"},{"cat":"Settlements","title":"Settlement management","text":"As Overseer, resolve decisions, develop buildings and improve settlement productivity and happiness while controlling debt and maintenance costs.","tags":"settlement overseer productivity happiness debt","sub":"Overview","confidence":"Established"},{"cat":"Bases","title":"Resource extraction networks","text":"Mineral and gas hotspots support automated extraction using extractors, supply pipes and depots. Independent extraction networks can be used to scale production while managing diminishing returns.","tags":"mineral gas extractor depot hotspot mine","sub":"Overview","confidence":"Established"},{"cat":"Economy","title":"Unit strategies","text":"Useful income paths include resource extraction, trading, salvage, high-value crafting, scanning builds and mission rewards. Diversifying income is useful for expensive late-game projects.","tags":"units money trading stasis salvage gold","sub":"Overview","confidence":"Established"},{"cat":"Economy","title":"Nanite strategies","text":"Repeatable sources include Runaway Mould refining, selling unwanted upgrade modules, Sentinel-related loot, discoveries and selected mission/reward loops.","tags":"nanites upgrade modules sentinel mould","sub":"Overview","confidence":"Established"},{"cat":"Combat","title":"Sentinels","text":"Sentinel combat escalates through alert levels. Strong shields, upgraded weapons and mobility improve survivability; Sentinel loot can also feed technology progression.","tags":"sentinel combat salvaged glass shields","sub":"Overview","confidence":"Established"},{"cat":"Dissonance","title":"Dissonant systems","text":"Dissonant worlds contain corrupted Sentinel content, Harmonic Camps and related technology/progression. Echo Locators can help locate valid Harmonic Camp targets in suitable systems.","tags":"dissonant harmonic camp echo locator interceptor","sub":"Overview","confidence":"Established"},{"cat":"Derelicts","title":"Derelict Freighters","text":"Derelict freighters are repeatable exploration/combat locations with salvage and upgrade opportunities. Prepare hazard protection, inventory space and suitable weapons.","tags":"derelict freighter emergency broadcast salvage","sub":"Overview","confidence":"Established"},{"cat":"Farming","title":"Agricultural production","text":"Base and freighter farming supports crafting chains and passive material generation. Specialist Farmer missions also introduce agricultural progression.","tags":"farm plants farmer freighter crops","sub":"Overview","confidence":"Established"},{"cat":"Refining","title":"Refiner system","text":"Portable, medium, large and personal refiners transform resources and can enable multi-input recipes. The in-game Catalogue records discovered refiner recipes.","tags":"refiner recipes personal medium large","sub":"Overview","confidence":"Established"},{"cat":"Trading","title":"Economies and trade","text":"System economies affect commodity production and demand. Economy information and Trade Surges can be used to identify profitable routes and temporary opportunities.","tags":"economy scanner trade surge commodities","sub":"Overview","confidence":"Established"},{"cat":"Xbox","title":"Xbox Series X/S notes","text":"No Man's Sky supports Xbox Series X/S. For a companion PWA, game progress must currently be entered or imported separately because the web app cannot directly read the console save.","tags":"xbox series s save companion","sub":"Overview","confidence":"Established"},{"cat":"Survival","sub":"Core","title":"Life Support","text":"Life Support drains during movement and environmental activity. Recharge it with suitable resources or Life Support Gel; technology upgrades can increase efficiency and capacity.","tags":"life support oxygen gel survival recharge","confidence":"Established"},{"cat":"Survival","sub":"Hazards","title":"Hazard Protection","text":"Base Hazard Protection shields the Exosuit from environmental extremes. Dedicated thermal, toxic, radiation and underwater technologies extend protection and can be recharged independently.","tags":"hazard heat cold toxic radiation underwater exosuit","confidence":"Established"},{"cat":"Resources","sub":"Stellar Metals","title":"Copper","text":"A yellow stellar metal commonly found as planetary deposits in yellow-star systems. Mine deposits with the Terrain Manipulator and refine Copper into Chromatic Metal.","tags":"copper chromatic metal yellow star terrain manipulator","confidence":"Established"},{"cat":"Resources","sub":"Stellar Metals","title":"Cadmium","text":"A red stellar metal associated with red-star systems. Access normally requires the appropriate hyperdrive progression. It refines into Chromatic Metal.","tags":"cadmium red star chromatic metal","confidence":"Established"},{"cat":"Resources","sub":"Stellar Metals","title":"Emeril","text":"A green stellar metal associated with green-star systems and used in technology/crafting progression. It can be refined into Chromatic Metal.","tags":"emeril green star chromatic metal","confidence":"Established"},{"cat":"Resources","sub":"Stellar Metals","title":"Indium","text":"A blue stellar metal associated with blue-star systems. It is a high-tier stellar resource and refines efficiently into Chromatic Metal.","tags":"indium blue star chromatic metal","confidence":"Established"},{"cat":"Resources","sub":"Ferrite","title":"Ferrite family","text":"Ferrite Dust, Pure Ferrite and Magnetised Ferrite form a major construction-material family. Refining converts between stages and many base/technology recipes use them.","tags":"ferrite dust pure magnetised construction refine","confidence":"Established"},{"cat":"Resources","sub":"Planetary","title":"Biome resources","text":"Paraffinium, Pyrite, Ammonia, Uranium, Dioxite and Phosphorus are associated with major planetary environment types and feed crafting, refining and recharge loops.","tags":"paraffinium pyrite ammonia uranium dioxite phosphorus biome","confidence":"Established"},{"cat":"Resources","sub":"Gases","title":"Atmospheric gases","text":"Nitrogen, Radon and Sulphurine are important atmospheric resources for advanced manufacturing chains. Gas hotspots allow automated extraction with Gas Extractors and Supply Depots.","tags":"nitrogen radon sulphurine gas extractor stasis fusion","confidence":"Established"},{"cat":"Refining","sub":"Equipment","title":"Portable and Personal Refiners","text":"Single-input refiners handle simple transformations. Portable refiners require fuel; Personal Refiners operate from Exosuit technology and are useful while travelling.","tags":"portable personal refiner simple recipes","confidence":"Verified reference"},{"cat":"Refining","sub":"Equipment","title":"Medium and Large Refiners","text":"Medium Refiners support two-input recipes; Large Refiners support three-input complex recipes. Base-connected versions do not require conventional refiner fuel.","tags":"medium large refiner two three input recipes","confidence":"Verified reference"},{"cat":"Cooking","sub":"Basics","title":"Nutrient Processor","text":"The Nutrient Processor combines harvested crops, fauna products, meats and processed ingredients into food. Foods can be consumed, sold, catalogued or presented to Cronus for rewards.","tags":"cooking nutrient processor cronus food recipe","confidence":"Verified reference"},{"cat":"Starships","sub":"Types","title":"Starship archetypes","text":"No Man's Sky includes multiple procedural and specialist starship families with different aesthetics, acquisition paths and strengths. Classes and installed technology further shape performance.","tags":"fighter explorer hauler shuttle exotic solar sentinel living ship types","confidence":"Established"},{"cat":"Starships","sub":"Construction","title":"Starship fabrication","text":"Supported conventional ship types can be assembled using salvaged components and a reactor core at suitable station fabrication facilities. Fabrication is distinct from Corvette construction.","tags":"fabrication ship builder reactor core components salvage","confidence":"Established"},{"cat":"Starships","sub":"Specialist","title":"Living Ships","text":"Living Ships are organic starships obtained through their dedicated progression. They use biological technology and have their own upgrade ecosystem.","tags":"living ship void egg starbirth organic technology","confidence":"Established"},{"cat":"Starships","sub":"Specialist","title":"Sentinel Interceptors","text":"Sentinel Interceptors are salvaged from Dissonant worlds through corrupted-Sentinel progression and use distinctive Sentinel technologies and materials.","tags":"sentinel interceptor dissonant harmonic brain salvage","confidence":"Established"},{"cat":"Multi-Tools","sub":"Types","title":"Multi-Tool families","text":"Multi-Tools come in several visual/faction families and classes. Their base bonuses, slot layouts, supercharged slots and installed technologies determine mining, scanning and combat performance.","tags":"rifle pistol experimental alien royal sentinel staff class","confidence":"Established"},{"cat":"Exosuit","sub":"Inventory","title":"Exosuit expansion","text":"Expand Exosuit inventory through station/Anomaly upgrade terminals and Drop Pods. Technology and cargo capacity directly affect survivability and build flexibility.","tags":"exosuit slots drop pod station anomaly inventory","confidence":"Established"},{"cat":"Exocraft","sub":"Vehicles","title":"Exocraft overview","text":"Planetary Exocraft provide specialised traversal, scanning, mining and hazard capabilities. The available vehicle set includes wheeled, hover, submarine and mech-style platforms.","tags":"roamer nomad pilgrim colossus nautilon minotaur exocraft","confidence":"Established"},{"cat":"Freighters","sub":"Bases","title":"Freighter bases","text":"Freighters can host persistent mobile bases with storage, cultivation, refining, fleet rooms and specialist facilities. Freighter technologies expand logistics and interstellar capability.","tags":"freighter base storage cultivation refiner matter beam","confidence":"Established"},{"cat":"Frigates","sub":"Expeditions","title":"Fleet expeditions","text":"The Navigator dispatches frigate fleets on specialist expeditions. Matching fleet strength and expedition role improves performance; expeditions return resources, Units and other rewards.","tags":"navigator expedition fleet rating fuel rewards","confidence":"Established"},{"cat":"Squadrons","sub":"Combat","title":"Starship squadrons","text":"Recruit NPC pilots into a personal squadron to accompany space combat. Squadron management is handled from the freighter and pilots can be developed within that system.","tags":"squadron pilot combat freighter recruit","confidence":"Established"},{"cat":"Bases","sub":"Power","title":"Base power","text":"Base electrical systems can use Biofuel Reactors, Solar Panels with Batteries, or Electromagnetic Generators placed on suitable hotspots. Wiring connects powered components.","tags":"power solar battery electromagnetic biofuel wiring","confidence":"Established"},{"cat":"Bases","sub":"Industry","title":"Mineral and gas extraction","text":"Survey Device hotspots support Mineral Extractors, Gas Extractors and Electromagnetic Generators. Supply pipes connect extractors to depots; network design affects scalable production.","tags":"survey hotspot extractor depot pipe electromagnetic","confidence":"Established"},{"cat":"Settlements","sub":"Management","title":"Overseer decisions","text":"Settlement Overseers resolve disputes, choose construction opportunities and make policy-style decisions that alter settlement statistics and features.","tags":"settlement overseer decisions buildings happiness productivity","confidence":"Established"},{"cat":"Exploration","sub":"Planets","title":"Planetary biomes","text":"Planets span normal, extreme, exotic and anomalous environments with differing weather, resources, flora, fauna and Sentinel conditions. Updates have added further world variety over time.","tags":"biome planet weather extreme exotic anomalous worlds","confidence":"Established"},{"cat":"Exploration","sub":"Oceans","title":"Oceans and underwater exploration","text":"Water worlds support underwater resources, fauna, structures and submarine exploration. Nautilon technology and underwater protection improve long-duration exploration.","tags":"ocean underwater nautilon water world abyss","confidence":"Established"},{"cat":"Exploration","sub":"Worlds","title":"Gas giants and newer worlds","text":"Worlds Part II expanded stellar and planetary variety with new stars, water worlds, gas giants, terrain and creatures. Some newer locations have mechanics distinct from classic terrestrial planets.","tags":"worlds part ii gas giants new stars water worlds","confidence":"Official"},{"cat":"Portals","sub":"Navigation","title":"Portal addresses","text":"A planetary portal address uses twelve glyph positions. Once glyphs are known and a portal is charged, addresses enable precise travel within the current galaxy.","tags":"portal 12 glyph address coordinates","confidence":"Established"},{"cat":"Galaxies","sub":"Travel","title":"Intergalactic travel","text":"Galaxy-core travel and story progression can move the player between galaxies. Bases and teleporters provide practical return routes once destinations have been established.","tags":"galaxy core eissentam euclid teleporter travel","confidence":"Established"},{"cat":"Missions","sub":"Story","title":"Artemis Path","text":"A major narrative chain introducing Travellers, portals, the simulation and core universe lore. It intersects with important late-game progression.","tags":"artemis apollo null purge atlas story","confidence":"Established"},{"cat":"Missions","sub":"Story","title":"Atlas Path","text":"The Atlas Path is a major lore/progression route centred on Atlas Interfaces and related milestones and rewards.","tags":"atlas path interface seed story","confidence":"Established"},{"cat":"Autophage","sub":"Story","title":"They Who Returned","text":"A late-game Autophage narrative introduced through Echoes-era content. It opens deeper interaction with the hidden robotic population and their technology/reward systems.","tags":"autophage they who returned echoes staff","confidence":"Official/Established"},{"cat":"Autophage","sub":"Rewards","title":"Voltaic Staff","text":"Autophage staff components can be acquired through Autophage progression and assembled into a staff-style Multi-Tool. Component and terminal choices influence the resulting tool.","tags":"voltaic staff autophage void motes multi tool","confidence":"Established"},{"cat":"Dissonance","sub":"Harmonic Camps","title":"Harmonic Camps","text":"Harmonic Camps on suitable Dissonant worlds provide terminals and progression connected to Sentinel Interceptors, Autophage content and corrupted technology.","tags":"harmonic camp echo locator dissonant sentinel","confidence":"Established"},{"cat":"Sentinels","sub":"Combat","title":"Sentinel escalation","text":"Hostile Sentinel activity escalates through combat waves. Planetary and space Sentinel encounters have distinct units and rewards; disabling or escaping them requires different tactics.","tags":"sentinel alert waves walker interceptor combat","confidence":"Established"},{"cat":"Piracy","sub":"Outlaws","title":"Outlaw systems","text":"Outlaw-controlled systems have pirate-oriented stations, contraband trade, missions and different law-enforcement behaviour. They are useful for pirate progression and specialist markets.","tags":"outlaw pirate contraband station suspicious packet","confidence":"Established"},{"cat":"Freighters","sub":"Combat","title":"Pirate Dreadnoughts","text":"Large pirate dreadnought encounters involve disabling offensive and escape capabilities while protecting civilian targets. Echoes expanded capital-ship combat and outlaw frigates.","tags":"pirate dreadnought trenches warp engines outlaw frigate","confidence":"Official"},{"cat":"Derelicts","sub":"Salvage","title":"Derelict Freighters","text":"Boardable derelict freighters are procedural dungeon-like salvage locations with environmental hazards, logs, loot and freighter upgrade opportunities.","tags":"derelict freighter emergency broadcast receiver salvage","confidence":"Established"},{"cat":"Economy","sub":"Trading","title":"System economies","text":"Economy type, wealth and local demand affect trade. Economy Scanner information helps identify markets and trade routes; commodity categories are intended to move between complementary economies.","tags":"economy wealth trade route scanner commodities","confidence":"Established"},{"cat":"Economy","sub":"Manufacturing","title":"High-value crafting","text":"Advanced product chains combine farm crops, gases and crafted components into high-value goods such as Stasis Devices and Fusion Ignitors. They reward planned industrial supply chains.","tags":"stasis device fusion ignitor crafting farm gas units","confidence":"Established"},{"cat":"Factions","sub":"Reputation","title":"Standing and guilds","text":"Interactions and missions affect standing with major species and guild organisations. Reputation unlocks rewards and can become a prerequisite for higher-level opportunities.","tags":"gek korvax vykeen merchants mercenaries explorers guild standing","confidence":"Established"},{"cat":"Companions","sub":"Fauna","title":"Creature companions","text":"Compatible fauna can be adopted as companions, summoned, accessorised and bred. Eggs can be modified through the Egg Sequencer before hatching.","tags":"companion fauna egg sequencer pet breed","confidence":"Established"},{"cat":"Fishing","sub":"Aquarius","title":"Fishing","text":"Aquarius introduced fishing as a dedicated activity with fishing technology, catches and associated progression. Water conditions and equipment affect the activity.","tags":"fishing aquarius rod bait fish water","confidence":"Official"},{"cat":"Fossils","sub":"Relics","title":"Palaeontology","text":"Relics introduced fossil excavation, collectible bones, skeleton assembly and fossil displays, alongside stone-guardian encounters and related expedition content.","tags":"relics fossils bones palaeontology skeleton","confidence":"Official"},{"cat":"Expeditions","sub":"Mode","title":"Community Expeditions","text":"Expeditions are time-limited structured journeys with milestones and account-wide cosmetic or specialist rewards. Completed rewards can generally be claimed from the expedition reward system on other saves.","tags":"expedition milestones rewards community anomaly","confidence":"Established"},{"cat":"Cosmos","sub":"Stations","title":"Space Station ownership","text":"Cosmos allows eligible Space Stations to be claimed after meeting local requirements. Directors can construct station spaces, customise them and use stations as alliance headquarters.","tags":"cosmos station director ownership construction alliance","confidence":"Official"},{"cat":"Cosmos","sub":"Exploration","title":"Deep-space points of interest","text":"Cosmos expands space with discoverable deep-space locations and salvage gameplay, including colossal hulks and remote outposts. The new system map supports navigation between space locations.","tags":"cosmos deep space hulk outpost system map salvage","confidence":"Official"},{"cat":"Corvettes","sub":"Construction","title":"Corvette construction","text":"Voyagers introduced bespoke, habitable, multi-crew Corvette-class ships assembled from modular pieces. Interiors can be furnished and friends can travel aboard.","tags":"voyagers corvette modules multi crew interior workshop","confidence":"Official"},{"cat":"Combat","sub":"Weapons","title":"Ground weapon planning","text":"Multi-Tool combat builds combine a primary weapon, its blueprint technologies, procedural upgrades, adjacency and supercharged slots. Weapon choice should match range and target type.","tags":"multi tool combat weapon upgrades adjacency supercharged","confidence":"Established"},{"cat":"Technology","sub":"Upgrades","title":"Upgrade modules and adjacency","text":"Technology blueprints and procedural upgrade modules can improve equipment. Compatible technologies placed together can gain adjacency bonuses; supercharged slots further amplify installed technology.","tags":"technology module adjacency supercharged s class x class","confidence":"Established"},{"cat":"Discovery","sub":"Catalogue","title":"Catalogue & Guide","text":"The in-game Catalogue & Guide records discovered items, recipes, technologies, lore and guidance. Pinning catalogue entries can create contextual objectives for missing ingredients or steps.","tags":"catalogue guide pin recipe discovery","confidence":"Official/Established"}];
-function knowledge(){
- let q=(window.kq||"").trim().toLowerCase(), cat=window.kcat||"", sub=window.ksub||"", article=window.karticle||"";
- const counts={}; KB.forEach(x=>counts[x.cat]=(counts[x.cat]||0)+1);
- if(q){
-   let rows=KB.filter(x=>(x.title+" "+x.text+" "+x.tags+" "+x.cat+" "+x.sub).toLowerCase().includes(q));
-   return `<section class="page active"><div class="card"><h2>NMS UNIVERSAL KNOWLEDGE</h2><input placeholder="Search the entire NMS database..." value="${esc(window.kq||"")}" oninput="window.kq=this.value;render()"><small class="muted">${rows.length} results across the universal database</small></div><div class="card"><h2>SEARCH RESULTS</h2>${rows.map((x,i)=>`<button class="item" style="width:100%;text-align:left" onclick="window.kq='';window.kcat='${esc(x.cat)}';window.ksub='${esc(x.sub)}';window.karticle='${esc(x.title)}';render()"><div class="row"><b>${esc(x.title)}</b><span class="pill">${esc(x.cat)}</span></div><small>${esc(x.sub)} • ${esc(x.text)}</small></button>`).join("")||'<div class="muted">No matching articles.</div>'}</div></section>`;
- }
- if(article){
-   let x=KB.find(z=>z.cat===cat&&z.sub===sub&&z.title===article);
-   if(!x){window.karticle="";return knowledge()}
-   return `<section class="page active"><div class="card"><button onclick="window.karticle='';render()">← ${esc(sub)}</button><small class="muted">KNOWLEDGE › ${esc(cat)} › ${esc(sub)}</small><h2>${esc(x.title)}</h2><span class="pill">${esc(x.confidence||"Established")}</span><p>${esc(x.text)}</p><h3>RELATED</h3>${KB.filter(z=>z!==x&&(z.cat===cat||z.tags.split(" ").some(t=>x.tags.includes(t)))).slice(0,6).map(z=>`<button class="item" style="width:100%;text-align:left" onclick="window.kcat='${esc(z.cat)}';window.ksub='${esc(z.sub)}';window.karticle='${esc(z.title)}';render()"><b>${esc(z.title)}</b><br><small>${esc(z.cat)} › ${esc(z.sub)}</small></button>`).join("")}</div></section>`;
- }
- if(sub){
-   let rows=KB.filter(x=>x.cat===cat&&x.sub===sub);
-   return `<section class="page active"><div class="card"><button onclick="window.ksub='';render()">← ${esc(cat)}</button><small class="muted">KNOWLEDGE › ${esc(cat)} › ${esc(sub)}</small><h2>${esc(sub)}</h2></div><div class="card">${rows.map(x=>`<button class="item" style="width:100%;text-align:left" onclick="window.karticle='${esc(x.title)}';render()"><b>${esc(x.title)}</b><br><small>${esc(x.text)}</small></button>`).join("")}</div></section>`;
- }
- if(cat){
-   let subs=[...new Set(KB.filter(x=>x.cat===cat).map(x=>x.sub))].sort();
-   return `<section class="page active"><div class="card"><button onclick="window.kcat='';render()">← KNOWLEDGE</button><small class="muted">KNOWLEDGE › ${esc(cat)}</small><h2>${esc(cat)}</h2></div><div class="card">${subs.map(s=>{let n=KB.filter(x=>x.cat===cat&&x.sub===s).length;return `<button class="item" style="width:100%;text-align:left" onclick="window.ksub='${esc(s)}';render()"><div class="row"><b>${esc(s)}</b><span class="pill">${n}</span></div><small>Open subsection →</small></button>`}).join("")}</div></section>`;
- }
- let cats=[...new Set(KB.map(x=>x.cat))].sort();
- return `<section class="page active"><div class="card"><h2>NMS UNIVERSAL KNOWLEDGE</h2><input placeholder="Search resources, recipes, ships, missions, Cosmos..." value="" oninput="window.kq=this.value;render()"><p class="muted">Universal No Man's Sky reference — independent of your personal save.</p><div class="row"><span class="pill">${KB.length} ARTICLES</span><span class="pill">${cats.length} CATEGORIES</span></div></div><div class="card"><h2>CATEGORIES</h2>${cats.map(c=>`<button class="item" style="width:100%;text-align:left" onclick="window.kcat='${esc(c)}';render()"><div class="row"><b>${esc(c)}</b><span class="pill">${counts[c]}</span></div><small>Browse category →</small></button>`).join("")}</div><div class="card"><h2>DATA POLICY</h2><small class="muted">Knowledge is universal, not filtered by your save. Official/current sources take priority. Community mechanics supplement undocumented systems. Patch-sensitive values should be rechecked after game updates.</small></div></section>`;
-}
-function data(){return `<section class="page active"><div class="card"><h2>ECONOMY</h2>
- ${field("units","Units",S.units)}${field("nanites","Nanites",S.nanites)}${field("quicksilver","Quicksilver",S.quicksilver)}${field("voidMotes","Void Motes",S.voidMotes)}
- ${field("glyphs","Portal Glyphs",S.glyphs)}${field("galaxies","Galaxies Established",S.galaxies)}</div>
- <div class="card"><h2>COMMAND NOTES</h2><textarea onchange="setField('notes',this.value)">${esc(S.notes)}</textarea></div>
- <div class="card"><h2>BACKUP / RESTORE</h2><div class="actions"><button class="primary" onclick="exportData()">EXPORT JSON</button><button onclick="document.getElementById('imp').click()">IMPORT JSON</button><input id="imp" type="file" accept=".json,application/json" style="display:none" onchange="importData(this)"></div><small class="muted">Export backups before clearing Safari data or moving devices.</small></div></section>`}
-function field(k,l,v){return `<label class="muted">${l}</label><input type="number" value="${Number(v)||0}" onchange="setField('${k}',this.value)">`}
-
-function normMissions(){
-  if(!Array.isArray(S.missions)) S.missions=[];
-  S.missions.forEach(m=>{
-    if(!m.priority)m.priority="Medium"; if(!m.createdAt)m.createdAt=Date.now();
-    if(!m.description)m.description="";
-    if(!m.notes)m.notes="";
-    if(!Array.isArray(m.objectives))m.objectives=[];
-    m.objectives=m.objectives.map(o=>typeof o==="string"?{name:o,done:false,priority:"Medium",notes:""}:{
-      name:o.name||o.title||"Objective",done:!!o.done,priority:o.priority||"Medium",notes:o.notes||""
-    });
-  });
-}
-function mpct(m){return m.objectives&&m.objectives.length?Math.round(100*m.objectives.filter(o=>o.done).length/m.objectives.length):(Number(m.progress)||0)}
-function mstatus(m){
- let p=mpct(m);
- if(m.objectives&&m.objectives.length){
-   if(p>=100)m.status="Complete";
-   else if(p>0)m.status="Active";
-   else m.status="Planned";
- }
- return m.status||"Planned";
-}
-function priorityRank(p){return {Critical:0,High:1,Medium:2,Low:3,Optional:4}[p]??2}
-let missionDraft=null;
-function cloneMission(m){return JSON.parse(JSON.stringify(m))}
-function addMissionV62(){
- missionDraft={mode:"create",index:-1,data:{id:uid(),name:"",description:"",priority:"Medium",status:"Planned",notes:"",objectives:[],createdAt:Date.now()}};
- renderMissionModal();
-}
-function editMissionV64(mi){
- const m=S.missions[mi];if(!m)return;
- missionDraft={mode:"edit",index:mi,data:cloneMission(m)};
- renderMissionModal();
-}
-function closeMissionModal(){missionDraft=null;document.getElementById("missionModal")?.remove()}
-function priorityOptions(selected){return ["Critical","High","Medium","Low","Optional"].map(p=>`<option ${p===selected?"selected":""}>${p}</option>`).join("")}
-function renderMissionModal(){
- document.getElementById("missionModal")?.remove();
- if(!missionDraft)return;
- const m=missionDraft.data;
- const creating=missionDraft.mode==="create";
- const wrap=document.createElement("div");
- wrap.id="missionModal";wrap.className="modal-backdrop";
- wrap.innerHTML=`<div class="modal-sheet mission-sheet" role="dialog" aria-modal="true" aria-label="${creating?"Create mission":"Edit mission"}">
-  <div class="modal-head">
-   <div><h2>${creating?"CREATE MISSION":"EDIT MISSION"}</h2><small class="muted">${creating?"Add a new mission and set up its objectives.":"Make changes to this mission and its objectives."}</small></div>
-   <button class="icon-btn" onclick="closeMissionModal()" aria-label="Close">×</button>
-  </div>
-
-  <section class="mission-section">
-   <div class="mission-section-title">MISSION DETAILS</div>
-   <div class="form-grid">
-    <div><label class="field-label">MISSION NAME *</label><input id="mmName" value="${esc(m.name)}" placeholder="Enter mission name..."></div>
-    <div><label class="field-label">PRIORITY</label><select id="mmPriority">${priorityOptions(m.priority)}</select></div>
-   </div>
-   <label class="field-label">DESCRIPTION</label><textarea id="mmDescription" placeholder="Enter a short description of this mission...">${esc(m.description||"")}</textarea>
-   <label class="field-label">MISSION NOTES</label><textarea id="mmNotes" placeholder="Add any additional notes, tips or information...">${esc(m.notes||"")}</textarea>
-  </section>
-
-  <section class="mission-section">
-   <div class="row">
-    <div><div class="mission-section-title">OBJECTIVES${creating?"":` (${m.objectives.length})`}</div>
-    <div class="mission-helper">${creating?"Add objectives to track your progress. You can edit, reorder or delete them later.":"Edit, reorder or delete objectives. Changes are saved when you apply."}</div></div>
-    ${creating?"":'<button class="primary" onclick="modalAddObjective()">+ ADD OBJECTIVE</button>'}
-   </div>
-   ${creating?'<button class="primary" style="width:100%" onclick="modalAddObjective()">+ ADD OBJECTIVE</button>':""}
-   <div id="modalObjectives"></div>
-   ${creating?"":'<div id="modalMissionProgress" class="progress-wrap"></div>'}
-  </section>
-
-  <div class="modal-actions">
-   ${creating?"":'<button class="danger" onclick="modalDeleteMission()">DELETE MISSION</button>'}
-   <button onclick="closeMissionModal()">CANCEL</button>
-   <button class="primary" onclick="saveMissionModal()">${creating?"CREATE MISSION":"SAVE CHANGES"}</button>
-  </div>
- </div>`;
- document.body.appendChild(wrap);
- renderModalObjectives();
-}
-function syncMissionFields(){
- if(!missionDraft)return;
- const g=id=>document.getElementById(id);
- if(g("mmName"))missionDraft.data.name=g("mmName").value;
- if(g("mmPriority"))missionDraft.data.priority=g("mmPriority").value;
- if(g("mmDescription"))missionDraft.data.description=g("mmDescription").value;
- if(g("mmNotes"))missionDraft.data.notes=g("mmNotes").value;
-}
-function renderModalObjectives(){
- const box=document.getElementById("modalObjectives");if(!box||!missionDraft)return;
- const a=missionDraft.data.objectives;
- if(!a.length){
-   box.innerHTML=`<div class="objective-empty"><strong>No objectives yet</strong>Add your first objective to get started.</div>`;
- }else{
-   box.innerHTML=a.map((o,i)=>`<div class="objective-row">
-    <div class="drag-handle">⠿</div>
-    <input type="checkbox" ${o.done?"checked":""} onchange="modalObjectiveField(${i},'done',this.checked)">
-    <input class="objective-name" value="${esc(o.name)}" placeholder="Objective" oninput="modalObjectiveField(${i},'name',this.value)">
-    <select class="obj-priority" onchange="modalObjectiveField(${i},'priority',this.value)">${priorityOptions(o.priority||"Medium")}</select>
-    <div class="obj-actions"><button onclick="modalMoveObjective(${i},-1)" aria-label="Move up">↑</button><button onclick="modalMoveObjective(${i},1)" aria-label="Move down">↓</button><button class="danger" onclick="modalDeleteObjective(${i})" aria-label="Delete objective">🗑</button></div>
-    <input class="objective-notes" value="${esc(o.notes||"")}" placeholder="Objective notes (optional)" oninput="modalObjectiveField(${i},'notes',this.value)">
-   </div>`).join("");
- }
- renderModalProgress();
-}
-function renderModalProgress(){
- const el=document.getElementById("modalMissionProgress");if(!el||!missionDraft)return;
- const m=missionDraft.data,total=m.objectives.length,done=m.objectives.filter(o=>o.done).length,pct=total?Math.round(done/total*100):0;
- el.innerHTML=`<div class="progress-label"><span>Progress: ${done} / ${total} complete</span><strong>${pct}%</strong></div><div class="bar"><i style="width:${pct}%"></i></div>`;
-}
-function modalAddObjective(){syncMissionFields();missionDraft.data.objectives.push({name:"",done:false,priority:"Medium",notes:""});renderModalObjectives()}
-function modalObjectiveField(i,k,v){if(missionDraft?.data.objectives[i]){missionDraft.data.objectives[i][k]=v;if(k==="done")renderModalProgress()}}
-function modalMoveObjective(i,dir){syncMissionFields();let a=missionDraft.data.objectives,j=i+dir;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];renderModalObjectives()}
-function modalDeleteObjective(i){syncMissionFields();missionDraft.data.objectives.splice(i,1);renderModalObjectives()}
-function modalDeleteMission(){
- if(!missionDraft||missionDraft.mode!=="edit")return;
- if(!confirm("Delete this mission?"))return;
- S.missions.splice(missionDraft.index,1);missionDraft=null;document.getElementById("missionModal")?.remove();save();
-}
-function saveMissionModal(){
- syncMissionFields();const m=missionDraft.data;
- if(!m.name.trim()){alert("Enter a mission name.");return}
- m.name=m.name.trim();
- m.objectives=m.objectives.filter(o=>o.name.trim()).map(o=>({...o,name:o.name.trim()}));
- const pc=mpct(m);if(m.objectives.length)m.status=pc===100?"Complete":pc>0?"Active":"Planned";
- if(missionDraft.mode==="create")S.missions.push(m);else S.missions[missionDraft.index]=m;
- missionDraft=null;document.getElementById("missionModal")?.remove();save();
-}
-function addObjective(mi){editMissionV64(mi)}
-function editMissionObjectives(mi){editMissionV64(mi)}
-function editObjective(mi,oi){editMissionV64(mi)}
-function moveObjective(mi,oi,dir){
- let a=S.missions[mi].objectives,j=oi+dir;if(j<0||j>=a.length)return;
- [a[oi],a[j]]=[a[j],a[oi]];save();
-}
-function toggleObjective(mi,oi){S.missions[mi].objectives[oi].done=!S.missions[mi].objectives[oi].done;save()}
-function deleteObjective(mi,oi){if(confirm("Delete this objective?")){S.missions[mi].objectives.splice(oi,1);save()}}
-function deleteMissionV62(mi){if(confirm("Delete this mission and its objectives?")){S.missions.splice(mi,1);save()}}
-function missionsV62(){
- try{ normMissions(); localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){ console.error("Mission migration:",e); }
- let filter=window.mfilter||"All", sort=window.msort||"Priority";
- let rows=S.missions.map((m,i)=>({m,i})).filter(x=>filter==="All"||x.m.priority===filter);
- if(sort==="Priority")rows.sort((a,b)=>priorityRank(a.m.priority)-priorityRank(b.m.priority));
- if(sort==="Progress")rows.sort((a,b)=>mpct(b.m)-mpct(a.m));
- if(sort==="Newest")rows.sort((a,b)=>(b.m.createdAt||0)-(a.m.createdAt||0));
- if(sort==="Oldest")rows.sort((a,b)=>(a.m.createdAt||0)-(b.m.createdAt||0));
- return `<section class="page active">
- <div class="card"><div class="row"><div><h2>MISSION CONTROL</h2><small class="muted">Objectives drive mission progress automatically.</small></div><button onclick="addMissionV62()">+ CREATE MISSION</button></div>
- <div class="row"><select onchange="window.mfilter=this.value;render()">${["All","Critical","High","Medium","Low","Optional"].map(x=>`<option ${x===filter?"selected":""}>${x}</option>`).join("")}</select><select onchange="window.msort=this.value;render()">${["Priority","Newest","Oldest","Progress"].map(x=>`<option ${x===sort?"selected":""}>${x}</option>`).join("")}</select></div></div>
- ${rows.map(({m,i})=>{let pc=mpct(m),done=m.objectives.filter(o=>o.done).length,total=m.objectives.length;
- return `<div class="card"><div class="row"><div><span class="pill">${esc(m.priority)}</span> <span class="pill">${esc(mstatus(m))}</span><h2>${esc(m.name)}</h2></div><b>${pc}%</b></div>
- ${m.description?`<p>${esc(m.description)}</p>`:""}<div style="height:8px;background:#13212c;border-radius:8px;overflow:hidden"><div style="height:100%;width:${pc}%;background:currentColor"></div></div>
- <small class="muted">${done}/${total} objectives complete • Created ${new Date(m.createdAt||Date.now()).toLocaleDateString()}</small>
- <div class="row"><button onclick="editMissionV64(${i})">EDIT MISSION</button><button onclick="deleteMissionV62(${i})">DELETE</button></div>
- ${m.objectives.length?m.objectives.map((o,oi)=>`<div class="item"><div class="row"><label><input type="checkbox" ${o.done?"checked":""} onchange="toggleObjective(${i},${oi})"> <b>${esc(o.name)}</b></label><span class="pill">${esc(o.priority)}</span></div>${o.notes?`<small>${esc(o.notes)}</small>`:""}<div class="row"><button onclick="editObjective(${i},${oi})">EDIT</button><button onclick="moveObjective(${i},${oi},-1)">↑</button><button onclick="moveObjective(${i},${oi},1)">↓</button><button onclick="deleteObjective(${i},${oi})">DELETE</button></div></div>`).join(""):`<div class="item muted">No objectives yet. Tap EDIT MISSION to add objectives.</div>`}
- ${m.notes?`<div class="item"><b>MISSION NOTES</b><br><small>${esc(m.notes)}</small></div>`:""}</div>`}).join("")||'<div class="card muted">No missions match this filter.</div>'}
- </section>`;
-}
-
-function render(){
-  const routes={
-    command:command,
-    missions:missionsV62,
-    assets:assets,
-    fleet:fleet,
-    empire:empire,
-    knowledge:knowledge,
-    data:data
-  };
-  const app=document.getElementById("app");
-  try{
-    if(app) app.innerHTML=(routes[tab]||command)();
-  }catch(err){
-    console.error("NMSCC page render error:",err);
-    if(app) app.innerHTML=`<section class="page active"><div class="card"><h2>PAGE RECOVERY</h2><p>This page hit a data error.</p><button onclick="tab='command';render()">RETURN TO COMMAND</button><small class="muted">${String(err.message||err)}</small></div></section>`;
-  }
-  document.querySelectorAll("#tabs .tab").forEach(btn=>btn.classList.toggle("active",btn.dataset.tab===tab));
-}
-function addRec(k){let name=prompt("Name");if(!name)return;let role=prompt("Role / status","");let details=prompt("Details","");S[k].push({name,role,status:role,details});save()}
-function editRec(k,i){let x=S[k][i];let name=prompt("Name",x.name);if(name===null)return;let role=prompt("Role / status",x.role||x.status||x.class||"");if(role===null)return;let details=prompt("Details",x.details||x.notes||"");if(details===null)return;Object.assign(x,{name,role,status:role,details});save()}
-function delRec(k,i){if(confirm("Delete this record?")){S[k].splice(i,1);save()}}
-function addMission(){let name=prompt("Mission name");if(!name)return;S.missions.push({name,status:"PLANNED",progress:0,notes:""});save()}
-function editMission(i){let m=S.missions[i];let name=prompt("Mission name",m.name);if(name===null)return;let status=prompt("Status",m.status);if(status===null)return;let p=prompt("Progress 0-100",m.progress);if(p===null)return;let notes=prompt("Objective / notes",m.notes);if(notes===null)return;Object.assign(m,{name,status,progress:Math.max(0,Math.min(100,Number(p)||0)),notes});save()}
-function delMission(i){if(confirm("Delete this mission?")){S.missions.splice(i,1);save()}}
-function exportData(){let b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="NMS-Command-Centre-V5-backup.json";a.click();URL.revokeObjectURL(a.href)}
-function importData(el){let f=el.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);S=Object.assign({},defaults,x);save();alert("Backup imported.")}catch(e){alert("Invalid backup file.")}};r.readAsText(f)}
-
-function initNavigation(){
-  const nav=document.getElementById("tabs");
-  if(!nav)return;
-  nav.replaceChildren();
-  const navItems=[
-    ["command","COMMAND"],
-    ["missions","MISSIONS"],
-    ["assets","ASSETS"],
-    ["fleet","FLEET"],
-    ["empire","EMPIRE"],
-    ["knowledge","KNOWLEDGE"],
-    ["data","DATA"]
-  ];
-  navItems.forEach(([id,label])=>{
-    const btn=document.createElement("button");
-    btn.type="button";
-    btn.className="tab";
-    btn.dataset.tab=id;
-    btn.textContent=label;
-    btn.addEventListener("click",()=>{
-      tab=id;
-      render();
-    });
-    nav.appendChild(btn);
-  });
-}
-
-if("serviceWorker" in navigator)navigator.serviceWorker.register("./sw.js");
-
-document.addEventListener("DOMContentLoaded",function(){
-  try{
-    initNavigation();
-    render();
-  }catch(err){
-    console.error("NMSCC boot error:",err);
-    const app=document.getElementById("app");
-    if(app) app.innerHTML=`<section class="page active"><div class="card"><h2>BOOT RECOVERY</h2><p>${String(err.message||err)}</p></div></section>`;
-  }
-});
-
-</script>
-</body></html>
+function pct(m){let a=m.objectives||[];return a.length?Math.round(a.filter(o=>o.done).length/a.length*100):(m.status==="Complete"?100:0)}
+function status(m){if((m.objectives||[]).length){let p=pct(m);return p===100?"Complete":p>0?"Active":(m.status||"Planned")}return m.status||"Planned"}
+function cls(p){return String(p||"Medium").toLowerCase()}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function sortedObjectives(m){return [...(m.objectives||[])].sort((a,b)=>(priorityOrder[a.priority]??9)-(priorityOrder[b.priority]??9)||Number(a.done)-Number(b.done))}
+function nav(){let items=[["command","DASHBOARD"],["missions","MISSIONS"],["assets","ASSETS"],["fleet","FLEET"],["empire","EMPIRE"],["knowledge","KNOWLEDGE"],["data","DATA"]];for(let id of ["desktopNav","mobileNav"]){document.getElementById(id).innerHTML=items.map(([k,l])=>`<button class="${view===k?"active":""}" onclick="view='${k}';render()">${l}</button>`).join("")}}
+function missionList(){let a=S.missions.filter(m=>(filter==="All"||status(m)===filter)&&(!search||m.name.toLowerCase().includes(search.toLowerCase())));return a.map(m=>`<div class="mission ${selected===m.id?"selected":""}" onclick="selected='${m.id}';render()"><div><h3>${esc(m.name)}</h3><div class="sub">${esc(m.description||"")}</div><div class="bar"><i style="width:${pct(m)}%"></i></div><div class="sub">${(m.objectives||[]).filter(o=>o.done).length}/${(m.objectives||[]).length} objectives</div></div><span class="badge ${status(m)==="Complete"?"complete":cls(m.priority)}">${esc(status(m)==="Complete"?"Completed":m.priority)}</span></div>`).join("")}
+function missions(){let m=S.missions.find(x=>x.id===selected)||S.missions[0];if(m)selected=m.id;return `<div class="grid"><section class="panel"><div class="row"><div><div class="title">MISSIONS</div><div class="sub">Plan, track and complete your No Man's Sky journey.</div></div><button class="btn primary" onclick="openEditor(null)">+ CREATE MISSION</button></div><div class="filters">${["All","Active","Complete","Planned"].map(x=>`<button class="${filter===x?"active":""}" onclick="filter='${x}';render()">${x}</button>`).join("")}</div><input class="search" placeholder="Search missions..." value="${esc(search)}" oninput="search=this.value;render()">${missionList()}</section>${m?missionDetail(m):""}</div>`}
+function missionDetail(m){let objs=sortedObjectives(m);return `<section class="panel detail open"><div class="row"><div><h2>${esc(m.name)}</h2><div class="sub">${esc(m.description||"")}</div></div><div><span class="badge ${cls(m.priority)}">${esc(m.priority)}</span> <span class="badge ${status(m)==="Complete"?"complete":"low"}">${status(m)}</span></div></div><div class="bar"><i style="width:${pct(m)}%"></i></div><div class="row sub"><span>${(m.objectives||[]).filter(o=>o.done).length}/${(m.objectives||[]).length} objectives complete</span><b>${pct(m)}%</b></div><div class="tabs"><button class="active">Objectives</button><button>Notes</button><button>Related</button></div>${objs.map(o=>`<div class="objective ${o.done?"done":""}"><input type="checkbox" ${o.done?"checked":""} onchange="toggleObj('${m.id}','${esc(o.name)}',this.checked)"><div><b class="otext">${esc(o.name)}</b><div class="sub">${esc(o.notes||"")}</div></div><span class="badge ${cls(o.priority)}">${esc(o.priority)}</span></div>`).join("")}<div class="hint">Objectives automatically sort by priority: Critical → High → Medium → Low → Optional. Mission priority remains fully user-editable.</div><div class="row" style="margin-top:12px"><button class="btn danger" onclick="deleteMission('${m.id}')">DELETE MISSION</button><button class="btn primary" onclick="openEditor('${m.id}')">EDIT MISSION</button></div></section>`}
+function toggleObj(mid,name,val){let m=S.missions.find(x=>x.id===mid),o=m?.objectives.find(x=>x.name===name);if(o){o.done=val;m.status=pct(m)===100?"Complete":pct(m)>0?"Active":"Planned";save()}}
+function generic(title,body){return `<section class="panel"><div class="title">${title}</div>${body}</section>`}
+function command(){let active=S.missions.filter(m=>status(m)==="Active").length;return generic("COMMAND DASHBOARD",`<div class="cards"><div class="card"><div class="title">${(S.units/1e6).toFixed(1)}M</div><div class="sub">UNITS</div></div><div class="card"><div class="title">${S.nanites||0}</div><div class="sub">NANITES</div></div><div class="card"><div class="title">${S.glyphs||0}/16</div><div class="sub">GLYPHS</div></div><div class="card"><div class="title">${S.frigates||0}/30</div><div class="sub">FRIGATES</div></div></div><div class="card" style="margin-top:12px"><b>ACTIVE OPERATIONS</b><div class="title">${active}</div></div>`)}
+function assets(){return generic("ASSETS",`<div class="cards">${S.ships.map(x=>`<div class="card"><b>${esc(x.name)}</b><div class="sub">${esc(x.class)}-Class · ${esc(x.notes)}</div></div>`).join("")}${S.mines.map(x=>`<div class="card"><b>${esc(x.name)}</b><div class="sub">${esc(x.class)}-Class · ${esc(x.status)}</div></div>`).join("")}</div>`)}
+function fleet(){return generic("FLEET",`<div class="card"><b>Freighter Command</b><div class="sub">Freighter owned. Develop frigate roster toward 30 capacity.</div></div>`)}
+function empire(){return generic("EMPIRE",`<div class="cards"><div class="card"><b>Settlement</b><div class="sub">Development mission tracked in Mission Control.</div></div><div class="card"><b>Star Station Project</b><div class="sub">${(S.units/1e6).toFixed(1)}M / ~1B+ planning reserve</div></div><div class="card"><b>Gold Mine</b><div class="sub">S-Class · Operational</div></div><div class="card"><b>Activated Indium Mine</b><div class="sub">B-Class · Operational</div></div></div>`)}
+function knowledge(){return generic("KNOWLEDGE CORE",`<div class="card"><b>Universal NMS Knowledge</b><div class="sub">The universal reference database remains a core NMSCC system. This rebuild preserves the section while the database continues to be expanded.</div></div>`)}
+function data(){return generic("DATA",`<div class="cards"><div class="card"><label>Units</label><input class="search" type="number" value="${S.units}" onchange="S.units=+this.value;save()"></div><div class="card"><label>Nanites</label><input class="search" type="number" value="${S.nanites}" onchange="S.nanites=+this.value;save()"></div></div><div style="margin-top:12px"><button class="btn" onclick="exportData()">EXPORT JSON</button> <button class="btn" onclick="document.getElementById('imp').click()">IMPORT JSON</button><input id="imp" type="file" accept=".json" hidden onchange="importData(this.files[0])"></div>`)}
+function render(){nav();let routes={command,missions,assets,fleet,empire,knowledge,data};document.getElementById("app").innerHTML=(routes[view]||missions)();document.getElementById("unitstat").textContent=(S.units/1e6).toFixed(1)+"M Units";document.getElementById("nanstat").textContent=(S.nanites||0)+" Nanites"}
+function opts(v){return ["Critical","High","Medium","Low","Optional"].map(x=>`<option ${x===v?"selected":""}>${x}</option>`).join("")}
+function openEditor(id){let m=id?S.missions.find(x=>x.id===id):null;draft=m?clone(m):{id:"m"+Date.now(),name:"",description:"",priority:"Medium",status:"Planned",notes:"",createdAt:Date.now(),objectives:[]};draft._editing=!!m;drawEditor()}
+function drawEditor(){document.getElementById("modal")?.remove();let d=document.createElement("div");d.id="modal";d.className="modalbg";d.innerHTML=`<div class="modal"><div class="row"><div><div class="title">${draft._editing?"EDIT MISSION":"CREATE MISSION"}</div><div class="sub">${draft._editing?"Modify mission details and manage existing objectives.":"Add a new mission and set up its objectives."}</div></div><button class="btn" onclick="closeEditor()">×</button></div><div class="formgrid"><div><label class="field">MISSION NAME *</label><input id="en" value="${esc(draft.name)}"></div><div><label class="field">MISSION PRIORITY</label><select id="ep">${opts(draft.priority)}</select></div></div><label class="field">DESCRIPTION</label><textarea id="ed">${esc(draft.description)}</textarea><label class="field">MISSION NOTES</label><textarea id="enn">${esc(draft.notes)}</textarea><div class="row"><div class="title" style="font-size:17px">OBJECTIVES</div><button class="btn primary" onclick="addDraftObj()">+ ADD OBJECTIVE</button></div><div class="sub">Objective priority is assigned automatically from its position/dependency. You can reorder objectives; NMSCC sorts the saved list by priority.</div><div id="eobjs">${draftObjs()}</div><div class="actions">${draft._editing?`<button class="btn danger" onclick="deleteMission('${draft.id}')">DELETE MISSION</button>`:""}<button class="btn" onclick="closeEditor()">CANCEL</button><button class="btn primary" onclick="saveEditor()">${draft._editing?"SAVE CHANGES":"CREATE MISSION"}</button></div></div>`;document.body.appendChild(d)}
+function autoPriority(i,n){if(i===0)return"Critical";if(i<Math.ceil(n*.45))return"High";if(i<Math.ceil(n*.75))return"Medium";return"Low"}
+function draftObjs(){let n=draft.objectives.length;draft.objectives.forEach((o,i)=>{if(!o._locked)o.priority=autoPriority(i,n)});return draft.objectives.map((o,i)=>`<div class="objedit"><input value="${esc(o.name)}" placeholder="Objective" oninput="draft.objectives[${i}].name=this.value"><span class="badge ${cls(o.priority)}">${o.priority}</span><button class="btn del danger" onclick="draft.objectives.splice(${i},1);drawEditor()">DELETE</button><input style="grid-column:1/-1" value="${esc(o.notes||"")}" placeholder="Objective notes" oninput="draft.objectives[${i}].notes=this.value"><div style="grid-column:1/-1"><button class="btn" onclick="moveDraft(${i},-1)">↑</button> <button class="btn" onclick="moveDraft(${i},1)">↓</button></div></div>`).join("")||`<div class="hint">No objectives yet. Add your first objective to get started.</div>`}
+function syncEditor(){if(!draft)return;let g=x=>document.getElementById(x);draft.name=g("en")?.value||draft.name;draft.priority=g("ep")?.value||draft.priority;draft.description=g("ed")?.value||"";draft.notes=g("enn")?.value||""}
+function addDraftObj(){syncEditor();draft.objectives.push({name:"",notes:"",done:false,priority:"Low"});drawEditor()}
+function moveDraft(i,d){syncEditor();let j=i+d;if(j<0||j>=draft.objectives.length)return;[draft.objectives[i],draft.objectives[j]]=[draft.objectives[j],draft.objectives[i]];drawEditor()}
+function saveEditor(){syncEditor();if(!draft.name.trim())return alert("Enter a mission name.");draft.objectives=draft.objectives.filter(o=>o.name.trim());draft.objectives.forEach((o,i)=>o.priority=autoPriority(i,draft.objectives.length));let edit=draft._editing;delete draft._editing;if(edit){let i=S.missions.findIndex(x=>x.id===draft.id);S.missions[i]=draft}else S.missions.unshift(draft);selected=draft.id;draft=null;document.getElementById("modal")?.remove();save()}
+function closeEditor(){draft=null;document.getElementById("modal")?.remove()}
+function deleteMission(id){if(!confirm("Delete this mission?"))return;S.missions=S.missions.filter(x=>x.id!==id);selected=S.missions[0]?.id;closeEditor();save()}
+function exportData(){let b=new Blob([JSON.stringify(S,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="NMSCC-backup.json";a.click();URL.revokeObjectURL(a.href)}
+function importData(f){if(!f)return;let r=new FileReader;r.onload=()=>{try{S={...clone(defaultState),...JSON.parse(r.result)};save()}catch(e){alert("Invalid NMSCC backup.")}};r.readAsText(f)}
+render();if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js");
+</script></body></html>
