@@ -14,77 +14,144 @@
 const KEY="nmscc3";
 const priorityOrder={Critical:0,High:1,Medium:2,Low:3,Optional:4};
 const seedMissions=[
-{id:"returned",name:"They Who Returned",description:"Continue the Autophage storyline and gain full access to Autophage content.",priority:"Critical",status:"Active",notes:"Autophage storyline is your current active operation.",createdAt:Date.now()-9000,objectives:[
-{name:"Awaken the Autophage",notes:"Trigger the They Who Returned storyline.",priority:"Critical",done:true},
-{name:"Trigger They Who Returned",notes:"Begin the Autophage storyline.",priority:"Critical",done:true},
-{name:"Progress They Who Returned",notes:"Continue the active Autophage story missions.",priority:"High",done:false},
-{name:"Locate Autophage Camps",notes:"Find and visit multiple Autophage camps.",priority:"High",done:false},
-{name:"Collect Void Motes",notes:"Build a reserve through Autophage activities.",priority:"High",done:false},
-{name:"Unlock Staff Component Access",notes:"Reach the point where staff parts can be acquired.",priority:"Medium",done:false}]},
-{id:"staff",name:"Autophage Staff",description:"Obtain and develop your Voltaic Staff.",priority:"High",status:"Planned",notes:"Begins after sufficient Autophage progression.",createdAt:Date.now()-8000,objectives:[
-{name:"Unlock Autophage staff access",priority:"Critical",done:false,notes:"Progress They Who Returned."},
-{name:"Earn Void Motes",priority:"High",done:false,notes:"Fund staff component purchases."},
-{name:"Acquire staff head",priority:"High",done:false,notes:"Choose preferred component."},
-{name:"Acquire staff core",priority:"High",done:false,notes:"Choose preferred component."},
-{name:"Acquire staff pole",priority:"High",done:false,notes:"Choose preferred component."},
-{name:"Assemble Voltaic Staff",priority:"Medium",done:false,notes:"Assemble at an Autophage terminal."},
-{name:"Upgrade and optimise Staff",priority:"Low",done:false,notes:"Improve class, modules and supercharged layout."}]},
-{id:"mould",name:"Runaway Mould Nanite Farm",description:"Establish a permanent Curious Deposit Nanite farm.",priority:"High",status:"Planned",notes:"Permanent Nanite source for upgrades.",createdAt:Date.now()-7000,objectives:[
-{name:"Locate Curious Deposits",priority:"Critical",done:false,notes:"Find a suitable cluster."},
-{name:"Claim farm site",priority:"High",done:false,notes:"Place a Base Computer."},
-{name:"Build containment walls",priority:"High",done:false,notes:"Stop mould balls escaping."},
-{name:"Install teleport loop",priority:"Medium",done:false,notes:"Enable respawn cycling."},
-{name:"Install refiners",priority:"Medium",done:false,notes:"Refine Runaway Mould into Nanites."},
-{name:"Test repeatable harvest cycle",priority:"Low",done:false,notes:"Confirm reliable respawn and refinement."}]},
-{id:"blueprints",name:"Construction Blueprints",description:"Unlock every construction blueprint.",priority:"Medium",status:"Active",notes:"Long-term completion objective.",createdAt:Date.now()-6000,objectives:[
-{name:"Audit unlocked construction catalogue",priority:"High",done:false,notes:"Identify missing categories."},
-{name:"Collect Salvaged Data",priority:"High",done:false,notes:"Build a blueprint currency reserve."},
-{name:"Unlock core base structures",priority:"High",done:false,notes:"Complete primary structural categories."},
-{name:"Unlock power and industry technology",priority:"Medium",done:false,notes:"Complete utility categories."},
-{name:"Unlock decoration and specialist parts",priority:"Low",done:false,notes:"Finish remaining catalogue."}]},
-{id:"specialists",name:"Base Specialist Missions",description:"Complete every workstation/base specialist mission chain.",priority:"Medium",status:"Planned",notes:"Overseer, Scientist, Armourer, Farmer and Technician chains.",createdAt:Date.now()-5000,objectives:[
-{name:"Complete Overseer chain",priority:"High",done:false,notes:""},
-{name:"Complete Scientist chain",priority:"High",done:false,notes:""},
-{name:"Complete Armourer chain",priority:"Medium",done:false,notes:""},
-{name:"Complete Farmer chain",priority:"Medium",done:false,notes:""},
-{name:"Complete Technician chain",priority:"Medium",done:false,notes:""}]},
-{id:"settlement",name:"Settlement Development",description:"Bring your settlement to its maximum practical potential.",priority:"High",status:"Active",notes:"Continue construction opportunities and improve settlement metrics.",createdAt:Date.now()-4000,objectives:[
-{name:"Clear settlement debt",priority:"Critical",done:false,notes:""},
-{name:"Keep construction opportunities active",priority:"High",done:false,notes:""},
-{name:"Increase productivity",priority:"High",done:false,notes:""},
-{name:"Increase citizen happiness",priority:"High",done:false,notes:""},
-{name:"Expand useful settlement buildings",priority:"Medium",done:false,notes:""},
-{name:"Improve settlement class",priority:"Medium",done:false,notes:""},
-{name:"Reach stable maximum development",priority:"Low",done:false,notes:""}]},
-{id:"corvette",name:"Corvette Development",description:"Complete and optimise your medium combat/exploration Corvette.",priority:"Medium",status:"Active",notes:"Nomad's Reach concept: forward cockpit, central spine, symmetrical weapon pods and rear engine cluster.",createdAt:Date.now()-3000,objectives:[
-{name:"Collect advanced Corvette modules",priority:"High",done:false,notes:"Target 20–30+ useful modules before finalising."},
-{name:"Install reactor and core systems",priority:"High",done:false,notes:""},
-{name:"Install engines and shields",priority:"High",done:false,notes:""},
-{name:"Install combat systems",priority:"Medium",done:false,notes:""},
-{name:"Install Tractor Beam",priority:"Medium",done:false,notes:"Pairs with your Gravitino Coil for Cosmos salvage."},
-{name:"Complete Nomad's Reach final layout",priority:"Low",done:false,notes:""}]},
-{id:"fleet",name:"Freighter & Frigate Fleet",description:"Develop your freighter and build a strong frigate fleet.",priority:"Medium",status:"Active",notes:"Freighter owned; fleet development remains in progress.",createdAt:Date.now()-2000,objectives:[
-{name:"Build initial balanced frigate roster",priority:"High",done:false,notes:"Recruit across expedition specialities."},
-{name:"Prioritise Industrial frigates",priority:"High",done:false,notes:"Useful for Salvaged Frigate Module opportunities."},
-{name:"Expand Fleet Command capacity",priority:"Medium",done:false,notes:""},
-{name:"Unlock priority freighter technology",priority:"Medium",done:false,notes:"Matter Beam and useful upgrades."},
-{name:"Develop frigates through expeditions",priority:"Medium",done:false,notes:""},
-{name:"Progress toward 30-frigate fleet",priority:"Low",done:false,notes:""}]},
-{id:"station",name:"Star Station Project",description:"Prepare for, acquire and develop your own Star Station.",priority:"High",status:"Active",notes:"Ultimate NMS Command Centre objective.",createdAt:Date.now()-1000,objectives:[
-{name:"Build Star Station acquisition fund",priority:"Critical",done:false,notes:"Current reserve: 120M Units. Planning target approximately 1B+."},
-{name:"Continue Cosmos salvage preparation",priority:"High",done:false,notes:"Gravitino Coil acquired; Tractor Beam remains useful."},
-{name:"Build local race and Guild standing",priority:"High",done:false,notes:"Prepare for Station Core requirements."},
-{name:"Complete required salvage contracts",priority:"High",done:false,notes:"Requirements vary by candidate station."},
-{name:"Inspect candidate Station Cores",priority:"Medium",done:false,notes:"Compare acquisition requirements."},
-{name:"Acquire a Star Station",priority:"Critical",done:false,notes:"Claim an eligible unowned station."},
-{name:"Develop station interior and exterior",priority:"Medium",done:false,notes:""},
-{name:"Establish station as operational headquarters",priority:"Low",done:false,notes:""}]},
-{id:"purge",name:"The Purge / Artemis Story",description:"Main Artemis storyline completed; green/lush galaxy selected.",priority:"Optional",status:"Complete",notes:"Completed milestone.",createdAt:Date.now()-12000,objectives:[{name:"Complete The Purge",priority:"Critical",done:true,notes:"Completed."},{name:"Choose Lush galaxy",priority:"Low",done:true,notes:"Completed."}]},
-{id:"glyphs",name:"Portal Glyphs",description:"Obtain all Portal Glyphs.",priority:"Optional",status:"Complete",notes:"16/16 obtained.",createdAt:Date.now()-11000,objectives:[{name:"Obtain 16/16 Portal Glyphs",priority:"Critical",done:true,notes:"Completed."}]}
-];
+{id:"returned",name:"They Who Returned",description:"Complete the active Autophage storyline and unlock the systems needed for your Staff.",priority:"Critical",status:"Active",notes:"CURRENT ACTIVE MISSION. The storyline has already been triggered.",createdAt:Date.now()-9000,objectives:[
+{name:"Complete The Purge / Artemis storyline",notes:"Completed; lush/green galaxy selected.",priority:"Critical",done:true},
+{name:"Obtain all 16 Portal Glyphs",notes:"Completed through The Purge.",priority:"Critical",done:true},
+{name:"Awaken the Autophage",notes:"Completed.",priority:"Critical",done:true},
+{name:"Trigger They Who Returned",notes:"Completed; storyline is active.",priority:"Critical",done:true},
+{name:"Continue They Who Returned story objectives",notes:"Follow the active mission until full Autophage progression opens.",priority:"Critical",done:false},
+{name:"Gain reliable access to Autophage camps",notes:"Use camps as the hub for Autophage activities and rewards.",priority:"High",done:false},
+{name:"Unlock Void Mote earning loop",notes:"Complete Autophage activities so Void Motes can be earned consistently.",priority:"High",done:false},
+{name:"Reach Staff-component access",notes:"Progress far enough to acquire the components needed for the Voltaic Staff.",priority:"High",done:false},
+{name:"Finish the They Who Returned mission chain",notes:"Complete the remaining storyline stages.",priority:"Medium",done:false}]},
+{id:"staff",name:"Autophage Staff",description:"Acquire, assemble and optimise your own Voltaic Staff.",priority:"High",status:"Planned",notes:"Begins as They Who Returned opens Staff progression.",createdAt:Date.now()-8000,objectives:[
+{name:"Complete required They Who Returned progression",priority:"Critical",done:false,notes:"Reach the Staff-access stage."},
+{name:"Build a Void Mote reserve",priority:"High",done:false,notes:"Earn enough Void Motes for your preferred Staff parts."},
+{name:"Choose and acquire Staff head",priority:"High",done:false,notes:"Pick the visual/stat component you want."},
+{name:"Choose and acquire Staff core",priority:"High",done:false,notes:"Acquire your preferred core."},
+{name:"Choose and acquire Staff pole",priority:"High",done:false,notes:"Acquire your preferred pole."},
+{name:"Assemble the Voltaic Staff",priority:"High",done:false,notes:"Assemble the three components at the appropriate Autophage terminal."},
+{name:"Improve Staff class",priority:"Medium",done:false,notes:"Work toward S-Class if the initial assembly is lower class."},
+{name:"Install three strong weapon/utility upgrades",priority:"Medium",done:false,notes:"Optimise the Staff as a usable Multi-Tool."},
+{name:"Optimise supercharged-slot and adjacency layout",priority:"Low",done:false,notes:"Final performance tuning."}]},
+{id:"mould",name:"Runaway Mould Nanite Farm",description:"Build a permanent Curious Deposit farm for repeatable Nanite production.",priority:"High",status:"Planned",notes:"Dedicated Nanite source for Multi-Tool, ship and other upgrade costs.",createdAt:Date.now()-7000,objectives:[
+{name:"Locate a good Curious Deposit cluster",priority:"Critical",done:false,notes:"Prefer a large group of mould balls in a convenient location."},
+{name:"Place a Base Computer at the site",priority:"High",done:false,notes:"Claim the Nanite farm."},
+{name:"Build containment walls behind the deposits",priority:"High",done:false,notes:"Prevent rolling deposits escaping downhill."},
+{name:"Install a local teleporter",priority:"High",done:false,notes:"Part of the respawn/reset loop."},
+{name:"Build a teleporter reset destination",priority:"Medium",done:false,notes:"Travel far enough away and return to respawn deposits."},
+{name:"Install enough refiners for the harvest size",priority:"Medium",done:false,notes:"5 Runaway Mould refines into 1 Nanite."},
+{name:"Run the first full harvest/refine cycle",priority:"Medium",done:false,notes:"Confirm the farm works end-to-end."},
+{name:"Test repeatable deposit respawn",priority:"Low",done:false,notes:"Verify reliable repeat farming."},
+{name:"Record average Nanites per cycle",priority:"Optional",done:false,notes:"Useful for future upgrade budgeting."}]},
+{id:"blueprints",name:"Construction Blueprints",description:"Unlock the complete construction catalogue.",priority:"Medium",status:"Active",notes:"Long-term completion goal: every construction blueprint.",createdAt:Date.now()-6000,objectives:[
+{name:"Audit the Construction Research Station catalogue",priority:"High",done:false,notes:"Identify every currently locked blueprint/category."},
+{name:"Create a Salvaged Data reserve",priority:"High",done:false,notes:"Farm buried technology modules as required."},
+{name:"Complete basic structural blueprint families",priority:"High",done:false,notes:"Floors, walls, roofs and structural pieces."},
+{name:"Complete power blueprint family",priority:"High",done:false,notes:"Generation, batteries, wiring and related systems."},
+{name:"Complete industrial/extraction blueprint family",priority:"Medium",done:false,notes:"Mining, gas and storage infrastructure."},
+{name:"Complete farming blueprint family",priority:"Medium",done:false,notes:"Planters and agricultural infrastructure."},
+{name:"Complete storage/utility blueprint family",priority:"Medium",done:false,notes:"Storage and functional base utilities."},
+{name:"Complete decorative blueprint families",priority:"Low",done:false,notes:"Finish cosmetic/decorative construction unlocks."},
+{name:"Re-audit catalogue until no targeted blueprints remain",priority:"Optional",done:false,notes:"Final completion check."}]},
+{id:"specialists",name:"Base Specialist Missions",description:"Complete all permanent base specialist/workstation mission chains.",priority:"Medium",status:"Planned",notes:"Track each specialist separately so no chain is left unfinished.",createdAt:Date.now()-5000,objectives:[
+{name:"Confirm/build required specialist terminals",priority:"High",done:false,notes:"Ensure your base can host each specialist."},
+{name:"Complete Overseer mission chain",priority:"High",done:false,notes:"Finish the Construction Terminal storyline."},
+{name:"Complete Scientist mission chain",priority:"High",done:false,notes:"Finish the Science Terminal storyline."},
+{name:"Complete Armourer mission chain",priority:"High",done:false,notes:"Finish the Weapons Terminal storyline."},
+{name:"Complete Farmer mission chain",priority:"Medium",done:false,notes:"Finish the Agricultural Terminal storyline."},
+{name:"Complete Exocraft Technician mission chain",priority:"Medium",done:false,notes:"Finish the Exocraft Terminal storyline."},
+{name:"Verify all specialist chains have reached repeatable/end state",priority:"Low",done:false,notes:"Final completion audit."}]},
+{id:"settlement",name:"Settlement Development",description:"Turn your existing settlement into a fully developed, productive settlement.",priority:"High",status:"Active",notes:"You already own/manage a settlement; objective is to max it out.",createdAt:Date.now()-4000,objectives:[
+{name:"Eliminate any settlement debt",priority:"Critical",done:false,notes:"Maintain positive production over maintenance."},
+{name:"Resolve current settlement decisions/events",priority:"High",done:false,notes:"Keep development moving whenever decisions become available."},
+{name:"Keep a construction opportunity active when available",priority:"High",done:false,notes:"Complete each staged construction project."},
+{name:"Raise settlement productivity",priority:"High",done:false,notes:"Prioritise decisions/buildings that improve output."},
+{name:"Raise citizen happiness",priority:"High",done:false,notes:"Improve happiness without undermining core productivity."},
+{name:"Expand population",priority:"Medium",done:false,notes:"Accept useful population-growth opportunities."},
+{name:"Develop useful special buildings",priority:"Medium",done:false,notes:"Factories, farms, marketplace, landing pads and other useful features as offered."},
+{name:"Improve settlement class",priority:"Medium",done:false,notes:"Progress toward the highest practical class."},
+{name:"Reach stable positive production and high happiness",priority:"Low",done:false,notes:"Maintain the settlement without recurring debt."},
+{name:"Reach maximum practical settlement development",priority:"Optional",done:false,notes:"Final settlement completion target."}]},
+{id:"corvette",name:"Corvette Development",description:"Finish your medium combat/exploration Corvette project, Nomad's Reach.",priority:"Medium",status:"Active",notes:"Design target: forward cockpit, long central spine, symmetrical side weapon pods, rear engine cluster. Freighter remains the mobile base.",createdAt:Date.now()-3000,objectives:[
+{name:"Keep a 40–50M Unit Corvette construction reserve",priority:"High",done:false,notes:"Your planned build budget."},
+{name:"Collect 20–30+ advanced/salvaged Corvette modules",priority:"High",done:false,notes:"Build a useful component pool before final layout."},
+{name:"Secure reactor/core system modules",priority:"High",done:false,notes:"Prioritise functional systems first."},
+{name:"Secure strong engine modules",priority:"High",done:false,notes:"Combat/exploration handling priority."},
+{name:"Secure strong shield modules",priority:"High",done:false,notes:"Survivability priority."},
+{name:"Secure suitable weapon modules",priority:"Medium",done:false,notes:"Build the symmetrical side weapon-pod concept."},
+{name:"Acquire and install Corvette Tractor Beam",priority:"Medium",done:false,notes:"Useful with your already-acquired Gravitino Coil for Cosmos salvage."},
+{name:"Build forward cockpit and central spine",priority:"Medium",done:false,notes:"Core silhouette of Nomad's Reach."},
+{name:"Build symmetrical side weapon pods",priority:"Medium",done:false,notes:"Maintain balanced visual/functional layout."},
+{name:"Build rear engine cluster",priority:"Medium",done:false,notes:"Complete the planned silhouette."},
+{name:"Tune mass, handling and combat performance",priority:"Low",done:false,notes:"Optimise after final module placement."},
+{name:"Complete and commission Nomad's Reach",priority:"Optional",done:false,notes:"Final Corvette milestone."}]},
+{id:"fleet",name:"Freighter & Frigate Fleet",description:"Develop your existing freighter into a capable fleet headquarters and build toward a 30-frigate roster.",priority:"Medium",status:"Active",notes:"Freighter ownership is already complete.",createdAt:Date.now()-2000,objectives:[
+{name:"Own a freighter",priority:"Critical",done:true,notes:"Completed."},
+{name:"Build sufficient Fleet Command Rooms",priority:"High",done:false,notes:"Support multiple concurrent expeditions."},
+{name:"Recruit a balanced first 10 frigates",priority:"High",done:false,notes:"Target roughly two Combat, Exploration, Industrial, Trade and Support."},
+{name:"Prioritise useful Industrial frigates",priority:"High",done:false,notes:"Useful for industrial expeditions and module progression."},
+{name:"Run frigate expeditions consistently",priority:"High",done:false,notes:"Level frigates and generate resources/rewards."},
+{name:"Acquire Salvaged Frigate Modules",priority:"Medium",done:false,notes:"Fund freighter technology unlocks."},
+{name:"Unlock Matter Beam",priority:"Medium",done:false,notes:"High-value quality-of-life freighter technology."},
+{name:"Improve freighter hyperdrive/technology",priority:"Medium",done:false,notes:"Develop the freighter as your fleet headquarters."},
+{name:"Develop strong specialist frigates",priority:"Low",done:false,notes:"Level good recruits through expeditions."},
+{name:"Expand toward 30-frigate maximum",priority:"Optional",done:false,notes:"Long-term fleet capacity target."}]},
+{id:"station",name:"Star Station Project",description:"Build the money, standing, salvage capability and infrastructure required to acquire and develop your own Star Station.",priority:"High",status:"Active",notes:"ULTIMATE END GOAL. Current confirmed capital: 120M Units.",createdAt:Date.now()-1000,objectives:[
+{name:"Reach 120M Units",priority:"Critical",done:true,notes:"Current confirmed milestone completed."},
+{name:"Acquire Gravitino Coil",priority:"Critical",done:true,notes:"Already acquired for Cosmos progression/salvage."},
+{name:"Establish Gold mine",priority:"High",done:true,notes:"S-Class hotspot operational."},
+{name:"Establish Activated Indium mine",priority:"High",done:true,notes:"B-Class hotspot operational."},
+{name:"Reach 250M Unit reserve",priority:"Critical",done:false,notes:"First major Star Station capital milestone."},
+{name:"Reach 500M Unit reserve",priority:"Critical",done:false,notes:"Second capital milestone."},
+{name:"Reach ~1B+ acquisition reserve",priority:"Critical",done:false,notes:"Planning target; exact Station Core cost/requirements can vary."},
+{name:"Acquire Corvette Tractor Beam",priority:"High",done:false,notes:"Complete the useful Gravitino Coil + Tractor Beam salvage setup."},
+{name:"Develop Cosmos salvage capability",priority:"High",done:false,notes:"Build a reliable salvage loop for station requirements."},
+{name:"Build local race standing",priority:"High",done:false,notes:"Prepare for candidate Station Core requirements."},
+{name:"Build relevant Guild standing",priority:"High",done:false,notes:"Prepare for candidate Station Core requirements."},
+{name:"Complete required salvage contracts",priority:"High",done:false,notes:"Exact requirements depend on the station."},
+{name:"Scout unowned candidate Space Stations",priority:"Medium",done:false,notes:"Identify systems/stations worth acquiring."},
+{name:"Inspect candidate Station Core requirements",priority:"Medium",done:false,notes:"Record cost, standing and salvage requirements."},
+{name:"Select preferred Star Station",priority:"Medium",done:false,notes:"Choose the final target."},
+{name:"Acquire and become Director of a Star Station",priority:"Critical",done:false,notes:"Ultimate ownership milestone."},
+{name:"Develop central lobby and station rooms",priority:"Medium",done:false,notes:"Begin owned-station construction."},
+{name:"Develop station exterior",priority:"Low",done:false,notes:"Expand/customise the external structure."},
+{name:"Establish the Star Station as your headquarters",priority:"Optional",done:false,notes:"Final Command Centre end-state."}]},
+{id:"experimental",name:"S-Class Experimental Multi-Tool",description:"Find and optimise an S-Class Experimental Multi-Tool focused on scanning.",priority:"Medium",status:"Planned",notes:"Separate from the S-Class weapon Multi-Tool you found and do not intend to use as your main tool.",createdAt:Date.now()-1500,objectives:[
+{name:"Locate an Experimental Multi-Tool candidate",priority:"High",done:false,notes:"Use portals/cabinet hunting as needed."},
+{name:"Obtain it at S-Class or upgrade it to S-Class",priority:"High",done:false,notes:"Upgrade route requires Nanites if not naturally S-Class."},
+{name:"Install three strong Scanner Modules",priority:"High",done:false,notes:"Prioritise fauna/flora scan rewards."},
+{name:"Install Waveform Recycler",priority:"Medium",done:false,notes:"Useful scanner-family technology."},
+{name:"Use best scanner upgrades in supercharged slots",priority:"Medium",done:false,notes:"Prioritise the strongest reward rolls."},
+{name:"Optimise scanner adjacency",priority:"Low",done:false,notes:"Compact layout for final performance."}]},
+{id:"lushbase",name:"Lush Galaxy Gateway",description:"Establish a permanent gateway base in the lush galaxy reached after The Purge.",priority:"Low",status:"Planned",notes:"Makes reliable travel between your galaxies easy.",createdAt:Date.now()-1400,objectives:[
+{name:"Return to the lush galaxy",priority:"High",done:false,notes:"Use existing teleport access if necessary."},
+{name:"Choose a permanent gateway planet",priority:"Medium",done:false,notes:"Prefer a convenient/safe location."},
+{name:"Place and name a Base Computer",priority:"Medium",done:false,notes:"Creates permanent galaxy access."},
+{name:"Install Base Teleporter and power",priority:"Medium",done:false,notes:"Enable reliable two-way travel."},
+{name:"Verify travel back to original galaxy",priority:"Low",done:false,notes:"Confirm both galaxy routes remain available."}]},
+{id:"purge",name:"The Purge / Artemis Story",description:"Main Artemis storyline completed; green/lush galaxy option selected.",priority:"Optional",status:"Complete",notes:"Completed major storyline milestone.",createdAt:Date.now()-12000,objectives:[
+{name:"Complete The Purge",priority:"Critical",done:true,notes:"Completed."},
+{name:"Complete Artemis storyline",priority:"Critical",done:true,notes:"Completed."},
+{name:"Choose green/lush galaxy option",priority:"Medium",done:true,notes:"Completed."}]},
+{id:"glyphs",name:"Portal Glyphs",description:"Obtain the complete Portal Glyph set.",priority:"Optional",status:"Complete",notes:"16/16 Portal Glyphs obtained.",createdAt:Date.now()-11000,objectives:[
+{name:"Obtain all 16 Portal Glyphs",priority:"Critical",done:true,notes:"16/16 complete."}]}
+]
 const defaultState={units:120000000,nanites:0,glyphs:16,frigates:0,missions:seedMissions,ships:[{name:"Embers Defender TB4",class:"A",notes:"Authenticated Starship"}],tools:[],mines:[{name:"Gold Mine",class:"S",status:"Operational"},{name:"Activated Indium Mine",class:"B",status:"Operational"}],bases:[],notes:""};
 function clone(x){return JSON.parse(JSON.stringify(x))}
-function load(){try{let old=JSON.parse(localStorage.getItem(KEY)||"null");if(!old)return clone(defaultState);let s={...clone(defaultState),...old};/* migrate personalised mission seeds without deleting user-created missions */let byId=new Map((s.missions||[]).map(m=>[m.id,m]));for(const sm of seedMissions){let existing=byId.get(sm.id);if(!existing){s.missions.push(clone(sm));continue}if(!existing.objectives||existing.objectives.length===0){existing.objectives=clone(sm.objectives);existing.description=existing.description||sm.description;existing.notes=existing.notes||sm.notes}}return s}catch(e){return clone(defaultState)}}
+function load(){try{let old=JSON.parse(localStorage.getItem(KEY)||"null");if(!old)return clone(defaultState);let s={...clone(defaultState),...old};/* migrate personalised mission seeds without deleting user-created missions */let byId=new Map((s.missions||[]).map(m=>[m.id,m]));for(const sm of seedMissions){let existing=byId.get(sm.id);if(!existing){s.missions.push(clone(sm));continue}{
+ let previous=existing.objectives||[];
+ let doneNames=new Set(previous.filter(o=>o.done).map(o=>String(o.name).toLowerCase()));
+ let previousByName=new Map(previous.map(o=>[String(o.name).toLowerCase(),o]));
+ existing.objectives=sm.objectives.map(so=>{
+   let po=previousByName.get(String(so.name).toLowerCase());
+   return {...clone(so),done:po?!!po.done:!!so.done,notes:(po&&po.notes)||so.notes};
+ });
+ existing.description=sm.description;
+ existing.notes=sm.notes;
+ if(existing.priority==null)existing.priority=sm.priority;
+ existing.status=existing.objectives.length&&existing.objectives.every(o=>o.done)?"Complete":existing.objectives.some(o=>o.done)?"Active":sm.status;
+}}return s}catch(e){return clone(defaultState)}}
 let S=load(),view="missions",selected="returned",filter="All",search="",draft=null;
 function save(){localStorage.setItem(KEY,JSON.stringify(S));render()}
 function pct(m){let a=m.objectives||[];return a.length?Math.round(a.filter(o=>o.done).length/a.length*100):(m.status==="Complete"?100:0)}
