@@ -24,10 +24,25 @@ nav button{border:0;background:none;padding:8px 2px;font-size:9px;color:var(--mu
 .page{display:none}.page.active{display:block}.pill{font-size:11px;padding:3px 7px;border:1px solid var(--line);border-radius:20px;color:var(--green)}
 .actions{display:flex;gap:6px;flex-wrap:wrap}.actions button{font-size:12px;padding:6px 8px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+#tabs{
+  position:fixed !important;
+  left:0; right:0; bottom:0;
+  z-index:9999 !important;
+  display:grid !important;
+  grid-template-columns:repeat(7,minmax(72px,1fr));
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:env(safe-area-inset-bottom);
+  background:#07131d;
+}
+#tabs .tab{min-width:72px;display:block !important;}
+body{padding-bottom:calc(78px + env(safe-area-inset-bottom)) !important;}
+
 </style>
 </head>
 <body>
-<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.7 • Runtime Recovery</small></header>
+<header><h1>ATLAS // NMS COMMAND CENTRE</h1><small>V6.8 • Navigation Restored</small></header>
 <main id="app"></main>
 <nav id="nav"></nav>
 <script>
@@ -229,18 +244,27 @@ function importData(el){let f=el.files[0];if(!f)return;let r=new FileReader();r.
 function initNavigation(){
   const nav=document.getElementById("tabs");
   if(!nav)return;
+  nav.replaceChildren();
   const navItems=[
-    ["command","COMMAND"],["missions","MISSIONS"],["assets","ASSETS"],
-    ["fleet","FLEET"],["empire","EMPIRE"],["knowledge","KNOWLEDGE"],["data","DATA"]
+    ["command","COMMAND"],
+    ["missions","MISSIONS"],
+    ["assets","ASSETS"],
+    ["fleet","FLEET"],
+    ["empire","EMPIRE"],
+    ["knowledge","KNOWLEDGE"],
+    ["data","DATA"]
   ];
-  nav.innerHTML=navItems.map(([id,label])=>
-    `<button type="button" class="tab" data-tab="${id}">${label}</button>`
-  ).join("");
-  nav.addEventListener("click",function(e){
-    const btn=e.target.closest("button[data-tab]");
-    if(!btn)return;
-    tab=btn.dataset.tab;
-    render();
+  navItems.forEach(([id,label])=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="tab";
+    btn.dataset.tab=id;
+    btn.textContent=label;
+    btn.addEventListener("click",()=>{
+      tab=id;
+      render();
+    });
+    nav.appendChild(btn);
   });
 }
 
