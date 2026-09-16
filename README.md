@@ -1,15 +1,14 @@
-# NMS Command Centre V6 — Knowledge Core
+# NMS Command Centre V6.1 — Universal Knowledge Core
 
-Adds an offline searchable No Man's Sky Knowledge Core to the existing Command Centre.
+Universal knowledge architecture, separate from personal save progression.
 
-## Included
-- Searchable/categorised NMS reference database
-- Resources, refining, exploration, portals, ships, Multi-Tools, freighters, frigates
-- Corvettes and Cosmos systems
-- Star Station directorship and alliances
-- Autophage, settlements, bases, economy, combat, Dissonance, derelicts, farming and Xbox notes
-- Existing V5 mission/assets/fleet/empire/data features retained
-- Existing `nmscc3` localStorage key retained
-- Network-first automatic update service worker (`nms-command-v6-1`)
+- 82 initial researched articles
+- Category → Subcategory → Article navigation
+- Full-database search
+- Related-article links
+- Information-confidence labels
+- Current systems including Worlds Part II, Relics, Aquarius, Voyagers and Cosmos
+- Existing Command Centre data preserved via `nmscc3`
+- Auto-update cache: `nms-command-v6-2`
 
-Patch-sensitive exact values should be checked against current Hello Games release notes.
+The database is designed for continued expansion; it is not restricted to the user's discoveries or previous questions.
